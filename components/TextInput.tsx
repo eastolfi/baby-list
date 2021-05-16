@@ -1,11 +1,16 @@
-import TextField from '@material-ui/core/TextField';
+import { KeyboardEvent } from 'react';
 import { AbstractControl } from 'react-reactive-form';
+import TextField from '@material-ui/core/TextField';
 
 interface TextInputProps extends AbstractControl {
-    required?: boolean;
+    meta: {
+        required?: boolean;
+        onKeyUp?: (e: any) => void;
+        [key: string]: any
+    }
 }
 
-export function TextInput({ handler, hasError, touched, meta, required, invalid }: TextInputProps) {
+export function TextInput({ handler, hasError, invalid, touched, meta }: TextInputProps) {
     let errorMessage = '';
 
     if (touched) {
@@ -18,11 +23,13 @@ export function TextInput({ handler, hasError, touched, meta, required, invalid 
         <div>
             <TextField
                 id="username"
+                type="text"
                 label={`Enter ${meta?.label}`}
                 variant="outlined"
-                required={required}
+                required={meta?.required}
                 error={touched && invalid}
                 helperText={errorMessage}
+                onKeyUp={(e: KeyboardEvent<HTMLInputElement>) => meta?.onKeyUp && meta?.onKeyUp(e)}
                 {...handler()} />
         </div>
     );
