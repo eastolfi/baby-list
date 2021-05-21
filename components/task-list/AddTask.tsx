@@ -1,5 +1,5 @@
-import { KeyboardEvent } from 'react';
-import { FieldControl, FieldGroup, FormBuilder, Validators } from 'react-reactive-form';
+import { FormEvent } from 'react';
+import { AbstractControl, FieldControl, FieldGroup, FormBuilder, Validators } from 'react-reactive-form';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone';
 
@@ -9,43 +9,41 @@ import { TextInput } from '../TextInput';
 interface AddTaskProps {
     onItemAdd: (item: Task) => void;
 }
+interface FormModel {
+    title: string;
+}
 
 export function AddTask({ onItemAdd }: AddTaskProps) {
     const form = FormBuilder.group({
         title: ['', Validators.required]
     });
 
-    const addTask = () => {
+    const addTask = ({ title }: FormModel) => {
         onItemAdd({
             id: (new Date()).toString(),
-            title: form.get('title').value,
+            title,
             done: false
         });
     }
 
-    const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (form.valid && e.keyCode === 13) {
-            e.preventDefault();
-            
-            addTask();
-            form.reset();
-        }
+    const handleSubmit = (e: FormEvent, value: FormModel) => {
+        e.preventDefault();
+        addTask(value);
     }
 
     return (
         <FieldGroup
             control={form}
-            render={() => (
+            render={( { value }: AbstractControl ) => (
                 <div className="w-full">
-                    <form className="flex flex-row mx-auto w-5/12" onSubmit={e => e.preventDefault()} >
-                        <FieldControl name="title" render={TextInput} meta={{ label: "Title", onKeyUp: handleKeyUp }} />
-                        <IconButton aria-label="add task" color="primary" onClick={() => addTask()}>
+                    <form className="flex flex-row mx-auto w-5/12" onSubmit={e => handleSubmit(e, value)} >
+                        <FieldControl name="title" render={TextInput} meta={{ label: "Title" }} />
+                        
+                        <IconButton aria-label="add task" color="primary" onClick={() => addTask(value)}>
                             <AddCircleTwoToneIcon fontSize="large" />
                         </IconButton>
                     </form>
                 </div>
-            )}>
-            
-        </FieldGroup>
+            )} />
     )
 }

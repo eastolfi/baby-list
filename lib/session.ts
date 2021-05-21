@@ -1,6 +1,6 @@
 import { Handler, withIronSession } from 'next-iron-session';
 
-export function withSession(handler: Handler) {
+export function withSession(handler: Handler): (...args: any[]) => Promise<any> {
     return withIronSession(handler, {
         password: 'complex_password_at_least_32_characters_long',
         cookieName: 'next.js/examples/with-iron-session',

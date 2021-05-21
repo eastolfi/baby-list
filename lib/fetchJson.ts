@@ -13,7 +13,6 @@ class MyError extends Error {
 export async function fetcher(url: RequestInfo, options?: RequestInit) {
     try {
         const response = await fetch(url, options);
-        console.log(response);
 
         // if the server replies, there's always some data in json
         // if there's a network error, it will throw at the previous line
@@ -23,8 +22,10 @@ export async function fetcher(url: RequestInfo, options?: RequestInit) {
             return data;
         }
 
+        console.log(response)
         throw new MyError(response.statusText, response, data);
     } catch (error) {
+        console.log(error)
         if (!error.data) {
             error.data = { message: error.message }
         }

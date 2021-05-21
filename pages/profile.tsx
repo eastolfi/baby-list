@@ -1,26 +1,42 @@
 import Layout from "../components/Layout";
-import { useUser } from "../lib/useUser";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+// import { useUser } from "../lib/useUser";
+import { useUser } from '@auth0/nextjs-auth0';
 
 function githubUrl(login: string) {
     return `https://api.github.com/users/${login}`;
 }
 
-export default function Profile() {
-    const { user } = useUser({ redirectTo: '/login' });
+// You can optionally pass your own `getServerSideProps` function into
+// `withPageAuthRequired` and the props will be merged with the `user` prop
+export const getServerSideProps = withPageAuthRequired();
 
-    if (!user || user.isLoggedIn === false) {
+export default function Profile() {
+    // const { user } = useUser({ redirectTo: '/login' });
+    const { user, error, isLoading } = useUser();
+
+    if (isLoading) {
         return <Layout>Loading...</Layout>
     }
+  
+    if (error) {
+        return <Layout>{ error.message }</Layout>
+    }
 
-    return (
+    return user && (
         <Layout>
             <h1>Your Github profile</h1>
 
-            <p style={{ fontStyle: 'italic' }}>
+            <div>
+                <img src={user.picture} alt={user.name} />
+                <h2>{user.name}</h2>
+                <p>{user.email}</p>
+            </div>
+            {/* <p style={{ fontStyle: 'italic' }}>
                 Public data, from{' '}
                 <a href={githubUrl(user.login)}>{githubUrl(user.login)}</a>, reduced to
                 `login` and `avatar_url`.
-            </p>
+            </p> */}
         </Layout>
     )
 }

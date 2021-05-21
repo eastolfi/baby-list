@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-interface IronNextApiRequest extends NextApiRequest {
+import { withSession } from '../../lib/session';
+
+export interface IronNextApiRequest extends NextApiRequest {
     session: any;
 }
 
-import { withSession } from '../../lib/session';
 
 export default withSession(async (req: IronNextApiRequest, res: NextApiResponse) => {
     const user = req.session.get('user');
