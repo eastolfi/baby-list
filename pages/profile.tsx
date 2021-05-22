@@ -3,9 +3,9 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 // import { useUser } from "../lib/useUser";
 import { useUser } from '@auth0/nextjs-auth0';
 
-function githubUrl(login: string) {
-    return `https://api.github.com/users/${login}`;
-}
+// function githubUrl(login: string) {
+//     return `https://api.github.com/users/${login}`;
+// }
 
 // You can optionally pass your own `getServerSideProps` function into
 // `withPageAuthRequired` and the props will be merged with the `user` prop
@@ -28,7 +28,7 @@ export default function Profile() {
             <h1>Your Github profile</h1>
 
             <div>
-                <img src={user.picture} alt={user.name} />
+                <img src={user.picture as string} alt={user.name as string} />
                 <h2>{user.name}</h2>
                 <p>{user.email}</p>
             </div>

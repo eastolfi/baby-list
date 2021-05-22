@@ -4,7 +4,7 @@ import { Task } from '@prisma/client'
 import { withSession } from '../../../lib/session';
 import { IronNextApiRequest } from '../user';
 import prisma from '../../../lib/prisma';
-import { withIronSession } from 'next-iron-session';
+// import { withIronSession } from 'next-iron-session';
 
 // export default withSession(async (_req: IronNextApiRequest, res: NextApiResponse) => {
 //     prisma.task.findMany()
