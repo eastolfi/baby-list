@@ -16,17 +16,25 @@ export function TaskItem({ item, onTaskDone }: TaskItemProps) {
         onTaskDone(item.id);
     };
 
-    return (
-        <ListItem>
-            {item.done ?
+    const TaskDoneButton = () => {
+        if (item.done) {
+            return (
                 <IconButton aria-label="uncomplete task" color="secondary" onClick={handleTaskDone}>
                     <ClearIcon />
                 </IconButton>
-            :
+            )
+        } else {
+            return (
                 <IconButton aria-label="complete task" color="primary" onClick={handleTaskDone}>
                     <DoneIcon />
                 </IconButton>
-            }
+            )
+        }
+    }
+
+    return (
+        <ListItem>
+            <TaskDoneButton />
             
             <DisplayTask item={item} />
         </ListItem>

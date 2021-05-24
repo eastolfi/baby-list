@@ -8,11 +8,15 @@ import { fetcher } from '../../lib/fetchJson';
 export interface Task {
     id: string;
     title: string;
-    done: boolean;
+    done?: boolean;
+    available?: boolean;
+    assigned?: string;
 }
 
 export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
+    // Dirty workaround
+    const [ refresh, setRefresh ] = useState(false);
     
     useEffect(() => {
         fetcher('/api/tasks/search', { method: 'POST' })
@@ -21,28 +25,30 @@ export default function TaskListPage() {
         }).catch(error => {
             console.error(error);
         });
-    }, []);
+    }, [refresh]);
 
     const handleMarkTaskDone = (taskId: string) => {
-        setItems((prev: Task[]) => {
-            return prev.map((task: Task) => {
-                if (task.id === taskId) {
-                    task.done = !task.done;
-                }
-                return task;
-            });
-        });
-    }
+        fetcher('/api/tasks/edit', { method: 'POST', body: JSON.stringify({ taskId }) })
+        .then(() => {
+            // Improve
+            setRefresh(!refresh)
 
-    const handleTaskAdded = (task: Task) => {
-        const b = JSON.stringify({ task })
-        console.log(b)
-        fetcher('/api/tasks/add', { method: 'POST', body: b })
-        .then(({ taskAdded }: { taskAdded: Task }) => {
-            setItems((prev: Task[]) => [...prev, taskAdded])
         }).catch(error => {
             console.error(error);
         });
+    }
+
+    const handleTaskAdded = (task: Omit<Task, 'id'>): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            fetcher('/api/tasks/add', { method: 'POST', body: JSON.stringify({ task }) })
+            .then(({ task: taskAdded }: { task: Task }) => {
+                setItems((prev: Task[]) => [...prev, taskAdded]);
+                resolve();
+            }).catch(error => {
+                console.error(error);
+                reject(error);
+            });
+        })
     };
 
     return (

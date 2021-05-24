@@ -19,7 +19,7 @@ export default function Layout({ children }: LayoutProps) {
     return (
         <>
             <Head>
-                <title>Iron Session</title>
+                <title>Baby List</title>
             </Head>
             <Header />
 

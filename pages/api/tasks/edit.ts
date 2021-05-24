@@ -1,23 +1,31 @@
-import { NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { Task } from '@prisma/client'
 
-import { withSession } from '../../../lib/session';
 import prisma from '../../../lib/prisma';
-import { IronNextApiRequest } from '../user';
 
-export default withSession(async (req: IronNextApiRequest, res: NextApiResponse) => {
-    const { id, title, done } = JSON.parse(req.body);
+export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
+    const { taskId } = JSON.parse(req.body) as {taskId: string};
 
     try {
-        const task: Task = await prisma.task.update({
-            where: { id },
-            data: {
-                title,
-                done
-            }
-        })
-        
-        res.json({ task });
+        const task = await prisma.task.findUnique({
+            where: { id: taskId },
+            select: { done: true }
+        });
+
+        if (task) {
+            const updatedTask: Task = await prisma.task.update({
+                where: { id: taskId },
+                data: {
+                    // title,
+                    done: !task.done
+                }
+            });
+
+            res.json({ task: updatedTask });
+        } else {
+            res.status(404).json({ message: `Task with ID ${taskId} not found` })
+        }
     } catch (error) {
         const { response: fetchResponse } = error
         res.status(fetchResponse?.status || 500).json(error.data)

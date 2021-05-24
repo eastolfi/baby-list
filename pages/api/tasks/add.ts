@@ -1,24 +1,26 @@
-import { NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
+import { Task } from '@prisma/client';
 
-import { withSession } from '../../../lib/session';
 import prisma from '../../../lib/prisma';
-import { IronNextApiRequest } from '../user';
 
-import { Task } from '../../task-list';
-
-export default withSession(async (req: IronNextApiRequest, res: NextApiResponse) => {
-    console.log(req.body.task)
+export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
     const { task } = JSON.parse(req.body) as {task: Task};
+    const session = getSession(req, res);
+
+    console.log(session?.user)
     
     try {
-        console.log(task.title || 'no title')
         // remove the title to test 
         const newTask: Task = await prisma.task.create({
             data: {
-                title: task.title
+                title: task.title,
+                available: task.assigned ? false : true,
+                assigned: task.assigned
+                // userId: session?.user.sub || ''
             }
-        })
-        console.log(newTask)
+        });
+        
         res.json({ task: newTask });
     } catch (error) {
         console.log(error)
@@ -26,27 +28,3 @@ export default withSession(async (req: IronNextApiRequest, res: NextApiResponse)
         res.status(fetchResponse?.status || 500).json(error.data || error)
     }
 });
-
-// export default async function(): Promise<void> {
-//     return new Promise((resolve, reject) => {
-//         return withSession(async (req: IronNextApiRequest, res: NextApiResponse) => {
-//             const { title } = JSON.parse(req.body);
-
-//             prisma.task.create({
-//                 data: {
-//                     title
-//                 }
-//             })
-//             .then((task: Task) => {
-//                 console.log('done')
-//                 console.log(task)
-//                 res.json({ task });
-//                 resolve();
-//             })
-//             .catch(error => {
-//                 res.status(500).send(error);
-//                 reject(error);
-//             });
-//         })
-//     });
-// };

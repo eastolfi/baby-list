@@ -25,6 +25,7 @@ export async function fetcher(url: RequestInfo, options?: RequestInit) {
         console.log(response)
         throw new MyError(response.statusText, response, data);
     } catch (error) {
+        console.log('An error occured:');
         console.log(error)
         if (!error.data) {
             error.data = { message: error.message }
