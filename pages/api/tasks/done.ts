@@ -3,30 +3,27 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { Task } from '@prisma/client'
 
 import prisma from '../../../lib/prisma';
-import { Task as TaskFront } from '../../task-list';
 
 export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
-    const { task } = JSON.parse(req.body) as {task: TaskFront};
-    
+    const { taskId } = JSON.parse(req.body) as {taskId: string};
+
     try {
-        const existingTask = await prisma.task.findUnique({
-            where: { id: task.id },
+        const task = await prisma.task.findUnique({
+            where: { id: taskId },
             select: { done: true }
         });
 
-        if (existingTask) {
+        if (task) {
             const updatedTask: Task = await prisma.task.update({
-                where: { id: task.id },
+                where: { id: taskId },
                 data: {
-                    title: task.title,
-                    assigned: task.assigned,
-                    available: !task.assigned
+                    done: !task.done
                 }
             });
 
             res.json({ task: updatedTask });
         } else {
-            res.status(404).json({ message: `Task with ID ${task.id} not found` })
+            res.status(404).json({ message: `Task with ID ${taskId} not found` })
         }
     } catch (error) {
         const { response: fetchResponse } = error

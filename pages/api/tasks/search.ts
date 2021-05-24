@@ -6,7 +6,15 @@ import prisma from '../../../lib/prisma';
 
 export default withApiAuthRequired(async (_req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const tasks: Task[] = await prisma.task.findMany();
+        const tasks: Task[] = await prisma.task.findMany({
+            include: {
+                createdBy: {
+                    select: {
+                        email: true
+                    }
+                }
+            }
+        });
 
         res.json({ tasks });
     } catch (error) {

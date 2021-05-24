@@ -8,16 +8,24 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
     const { task } = JSON.parse(req.body) as {task: Task};
     const session = getSession(req, res);
 
-    console.log(session?.user)
-    
     try {
-        // remove the title to test 
+        const user = await prisma.user.findUnique({
+            where: {
+                email: session?.user.email
+            }
+        });
+
+        if (!user) {
+            throw new Error('woopsi');
+        }
+
+        // remove the title to test error
         const newTask: Task = await prisma.task.create({
             data: {
                 title: task.title,
                 available: task.assigned ? false : true,
-                assigned: task.assigned
-                // userId: session?.user.sub || ''
+                assigned: task.assigned,
+                userId: user.id
             }
         });
         

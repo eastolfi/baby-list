@@ -2,44 +2,58 @@ import { FormEvent } from 'react';
 import { AbstractControl, FieldControl, FieldGroup, FormBuilder, Validators } from 'react-reactive-form';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone';
+import CheckCircleTwoToneIcon from '@material-ui/icons/CheckCircleTwoTone';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import { Task } from '../../pages/task-list';
 import { TextInput } from '../TextInput';
 
 interface AddTaskProps {
-    onItemAdd: (item: Omit<Task, 'id'>) => Promise<void>;
+    item?: Task;
+    onItemAdd?: (item: Omit<Task, 'id'>) => Promise<void>;
+    onItemEdit?: (item: Task) => void;
 }
 interface FormModel {
     title: string;
     assigned?: string;
 }
 
-export function AddTask({ onItemAdd }: AddTaskProps) {
+export function AddTask({ item, onItemAdd, onItemEdit }: AddTaskProps) {
     const form = FormBuilder.group({
         title: ['', Validators.required],
         assigned: ['']
     });
 
-    // const { user } = useUser();
+    if (item) {
+        form.setValue({
+            title: item.title,
+            assigned: item.assigned || ''
+        })
+    }
 
-    const addTask = ({ title, assigned }: FormModel) => {
+    const addOrEditTask = ({ title, assigned }: FormModel) => {
         const newTask: Omit<Task, 'id'> = {
             title,
             assigned
         };
 
-        // if (user) {
-        //     newTask.user = user;
-        // }
-
         // Use callback ?
-        onItemAdd(newTask).then(() => form.reset());
+        if (onItemAdd) {
+            onItemAdd(newTask).then(() => form.reset());
+        }
+
+        if (onItemEdit) {
+            onItemEdit({
+                ...item,
+                title,
+                assigned
+            } as Task);
+        }
     }
 
     const handleSubmit = (e: FormEvent, value: FormModel) => {
         e.preventDefault();
-        addTask(value);
+        addOrEditTask(value);
     }
 
     return (
@@ -53,8 +67,8 @@ export function AddTask({ onItemAdd }: AddTaskProps) {
                     
                     
                     <div className="w-4/12 mb-5">
-                        <IconButton disabled={invalid} aria-label="add task" color="primary" onClick={() => addTask(value)}>
-                            <AddCircleTwoToneIcon fontSize="large" />
+                        <IconButton disabled={invalid} aria-label="add task" color="primary" onClick={() => addOrEditTask(value)}>
+                            {item ? <CheckCircleTwoToneIcon fontSize="large" /> : <AddCircleTwoToneIcon fontSize="large" />}
                         </IconButton>
                     </div>
 

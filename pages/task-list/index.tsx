@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 import Layout from '../../components/Layout';
 import { AddTask } from '../../components/task-list/AddTask';
 import { TaskList } from '../../components/task-list/TaskList';
 import { fetcher } from '../../lib/fetchJson';
 
+export interface User {
+    email: string;
+}
 export interface Task {
     id: string;
     title: string;
     done?: boolean;
     available?: boolean;
     assigned?: string;
+    createdBy?: User;
 }
+
+export const getServerSideProps = withPageAuthRequired();
 
 export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
@@ -28,7 +35,7 @@ export default function TaskListPage() {
     }, [refresh]);
 
     const handleMarkTaskDone = (taskId: string) => {
-        fetcher('/api/tasks/edit', { method: 'POST', body: JSON.stringify({ taskId }) })
+        fetcher('/api/tasks/done', { method: 'POST', body: JSON.stringify({ taskId }) })
         .then(() => {
             // Improve
             setRefresh(!refresh)
@@ -51,6 +58,17 @@ export default function TaskListPage() {
         })
     };
 
+    const handleTaskEdited = (task: Task) => {
+        fetcher('/api/tasks/edit', { method: 'POST', body: JSON.stringify({ task }) })
+        .then(() => {
+            // Improve
+            setRefresh(!refresh)
+
+        }).catch(error => {
+            console.error(error);
+        });
+    }
+
     return (
         <Layout>
             <div className="flex flex-col items-center">
@@ -59,9 +77,9 @@ export default function TaskListPage() {
                 <TaskList
                     elements={items}
                     onTaskDone={handleMarkTaskDone}
+                    onItemEdited={handleTaskEdited}
                 ></TaskList>
             </div>
-            
         </Layout>
     )
 }
