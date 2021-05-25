@@ -1,4 +1,5 @@
 import { useUser } from '@auth0/nextjs-auth0';
+
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import ClearIcon from '@material-ui/icons/Clear';
