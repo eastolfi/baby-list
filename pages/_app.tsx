@@ -3,6 +3,8 @@ import Head from 'next/head';
 import { SWRConfig } from 'swr';
 import { UserProvider } from '@auth0/nextjs-auth0';
 
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 import { fetcher } from '../lib/fetchJson';
 
 import '../styles/global.scss';
@@ -21,6 +23,8 @@ export default function App({ Component, pageProps }: AppProps) {
                     }
                 }}
             >
+                <CssBaseline />
+
                 <Component {...pageProps} />
             </SWRConfig>
         </UserProvider>

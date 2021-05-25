@@ -2,7 +2,9 @@ import Head from 'next/head';
 import { ReactNode } from 'react';
 import styled from '@emotion/styled';
 
-import Header from './Header';
+// import ChildFriendlyTwoToneIcon from '@material-ui/icons/ChildFriendlyTwoTone';
+
+import Navigation from './Navigation';
 
 const MainContainer = styled.div`
     max-width: 65rem;
@@ -21,13 +23,14 @@ export default function Layout({ children }: LayoutProps) {
             <Head>
                 <title>Baby List</title>
             </Head>
-            <Header />
 
             <main>
                 <MainContainer>
                     { children }
                 </MainContainer>
             </main>
+
+            <Navigation />
         </>
     )
 }
