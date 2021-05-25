@@ -20,13 +20,12 @@ export default function Profile() {
 
     return user && (
         <Layout>
-            <h1>Your Github profile</h1>
+            <h1>Tu perfil</h1>
 
             <div>
                 <img src={user.picture as string} alt={user.name as string} />
                 <h2>{user.name}</h2>
                 <p>{user.email}</p>
-                <p>{user.sub as string}</p>
             </div>
         </Layout>
     )

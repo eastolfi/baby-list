@@ -23,7 +23,7 @@ const afterCallback = async (_req: NextApiRequest, _res: NextApiResponse, sessio
         });
     
         if (!newUser) {
-            throw new Error('Woopsi 2')
+            throw new Error('no user found after the login')
         }
     } catch (error) {
         console.log(error);

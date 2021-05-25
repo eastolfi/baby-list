@@ -2,8 +2,14 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-    console.log('Nothing to seed');
-    return Promise.resolve();
+    await prisma.user.update({
+        where: {
+            email: 'eastolfi91@gmail.com'
+        },
+        data: {
+            isAdmin: true
+        }
+    });
 }
 
 main()

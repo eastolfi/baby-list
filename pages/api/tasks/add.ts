@@ -16,7 +16,7 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
         });
 
         if (!user) {
-            throw new Error('woopsi');
+            throw new Error('no user found when creating the task');
         }
 
         // remove the title to test error

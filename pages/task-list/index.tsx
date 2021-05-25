@@ -8,6 +8,7 @@ import { fetcher } from '../../lib/fetchJson';
 
 export interface User {
     email: string;
+    isAdmin: boolean;
 }
 export interface Task {
     id: string;
@@ -22,24 +23,24 @@ export const getServerSideProps = withPageAuthRequired();
 
 export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
-    // Dirty workaround
-    const [ refresh, setRefresh ] = useState(false);
-    
-    useEffect(() => {
+
+    const searchTasks = () => {
         fetcher('/api/tasks/search', { method: 'POST' })
         .then(({ tasks }: { tasks: Task[] }) => {
             setItems(tasks);
         }).catch(error => {
             console.error(error);
         });
-    }, [refresh]);
+    }
+    
+    useEffect(() => {
+        searchTasks();
+    }, []);
 
     const handleMarkTaskDone = (taskId: string) => {
         fetcher('/api/tasks/done', { method: 'POST', body: JSON.stringify({ taskId }) })
         .then(() => {
-            // Improve
-            setRefresh(!refresh)
-
+            searchTasks();
         }).catch(error => {
             console.error(error);
         });
@@ -47,9 +48,9 @@ export default function TaskListPage() {
 
     const handleTaskAdded = (task: Omit<Task, 'id'>): Promise<void> => {
         return new Promise((resolve, reject) => {
-            fetcher('/api/tasks/add', { method: 'POST', body: JSON.stringify({ task }) })
-            .then(({ task: taskAdded }: { task: Task }) => {
-                setItems((prev: Task[]) => [...prev, taskAdded]);
+            return fetcher('/api/tasks/add', { method: 'POST', body: JSON.stringify({ task }) })
+            .then(() => {
+                searchTasks();
                 resolve();
             }).catch(error => {
                 console.error(error);
@@ -61,9 +62,7 @@ export default function TaskListPage() {
     const handleTaskEdited = (task: Task) => {
         fetcher('/api/tasks/edit', { method: 'POST', body: JSON.stringify({ task }) })
         .then(() => {
-            // Improve
-            setRefresh(!refresh)
-
+            searchTasks();
         }).catch(error => {
             console.error(error);
         });

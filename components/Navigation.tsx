@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@auth0/nextjs-auth0';
 
@@ -24,6 +24,10 @@ export default function Navigation(_props: NavigationProps) {
         router.push(newValue);
     };
 
+    useEffect(() => {
+        setValue(window.location.pathname);
+    }, []);
+
     const navigationClasses = 'fixed bottom-0 w-full shadow-top';
 
     if (isLoading) {
@@ -38,7 +42,7 @@ export default function Navigation(_props: NavigationProps) {
     if (!user) {
         return (
             <BottomNavigation showLabels value={value} onChange={handleChange} className={navigationClasses}>
-                <BottomNavigationAction label="Conectarse" value="/api/auth/login" icon={<AccountCircleTwoToneIcon />} />
+                <BottomNavigationAction label="Conectarse" value="/api/auth/login" icon={<PersonAddTwoToneIcon />} />
             </BottomNavigation>
         )
     }
@@ -47,7 +51,7 @@ export default function Navigation(_props: NavigationProps) {
         <BottomNavigation value={value} onChange={handleChange} className={navigationClasses}>
             <BottomNavigationAction label="Inicio" value="/" icon={<HomeTwoToneIcon />} />
             <BottomNavigationAction label="Tareas" value="/task-list" icon={<AssignmentTwoToneIcon />} />
-            <BottomNavigationAction label="Cuenta" value="/profile" icon={<PersonAddTwoToneIcon />} />
+            <BottomNavigationAction label="Cuenta" value="/profile" icon={<AccountCircleTwoToneIcon />} />
             <BottomNavigationAction label="Desconectarse" value="/api/auth/logout" icon={<MeetingRoomTwoToneIcon />} />
         </BottomNavigation>
     )

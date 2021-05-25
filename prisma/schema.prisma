@@ -25,6 +25,7 @@ model User {
   provider   String
   userId     String       @unique
   email      String       @unique
+  isAdmin    Boolean      @default(false)
   Task       Task[]
   Permission Permission[]
 }

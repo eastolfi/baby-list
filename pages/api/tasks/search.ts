@@ -10,7 +10,8 @@ export default withApiAuthRequired(async (_req: NextApiRequest, res: NextApiResp
             include: {
                 createdBy: {
                     select: {
-                        email: true
+                        email: true,
+                        isAdmin: true
                     }
                 }
             }

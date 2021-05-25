@@ -44,7 +44,7 @@ export function TaskItem({ item, onTaskDone, onItemEdited }: TaskItemProps) {
 
     return (
         <ListItem>
-            <TaskDoneButton />
+            {item.createdBy?.isAdmin && <TaskDoneButton />}
             
             <DisplayTask item={item} />
 
