@@ -22,7 +22,6 @@ export function TextInput({ handler, hasError, invalid, touched, meta }: TextInp
     return (
         <div className="w-full">
             <TextField
-                id="username"
                 type="text"
                 className="w-full"
                 label={`${meta?.label}`}

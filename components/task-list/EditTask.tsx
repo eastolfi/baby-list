@@ -29,7 +29,7 @@ function EditModal({ open, item, onClose }: { open: boolean, item: Task, onClose
 
 type EditTaskProps = {
     item: Task;
-    className: string;
+    className?: string;
     onItemEdited: (item: Task) => void;
 }
 

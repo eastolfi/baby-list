@@ -46,6 +46,15 @@ export default function TaskListPage() {
         });
     }
 
+    const handleTaskAssigned = (done: boolean, assigned?: string, error?: Error) => {
+        if (done) {
+            console.log(`Task assigned to ${assigned}`);
+            searchTasks();
+        } else {
+            alert(`An error occured - ${error?.message || error || 'Contact support'}`);
+        }
+    }
+
     const handleTaskAdded = (task: Omit<Task, 'id'>): Promise<void> => {
         return new Promise((resolve, reject) => {
             return fetcher('/api/tasks/add', { method: 'POST', body: JSON.stringify({ task }) })
@@ -77,6 +86,7 @@ export default function TaskListPage() {
                     elements={items}
                     onTaskDone={handleMarkTaskDone}
                     onItemEdited={handleTaskEdited}
+                    onTaskAssigned={handleTaskAssigned}
                 ></TaskList>
             </div>
         </Layout>

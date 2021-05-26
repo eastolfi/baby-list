@@ -6,6 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import DoneIcon from '@material-ui/icons/Done';
 
 import { Task } from '../../pages/task-list';
+import { AssignTask } from './AssignTask';
 import { DisplayTask } from './DisplayTask';
 import { EditTask } from './EditTask';
 
@@ -13,9 +14,10 @@ interface TaskItemProps {
     item: Task;
     onTaskDone: (taskId: string) => void;
     onItemEdited: (item: Task) => void;
+    onTaskAssigned?: (done: boolean, assigned?: string, error?: Error) => void;
 }
 
-export function TaskItem({ item, onTaskDone, onItemEdited }: TaskItemProps) {
+export function TaskItem({ item, onTaskDone, onItemEdited, onTaskAssigned }: TaskItemProps) {
     const handleTaskDone = () => {
         onTaskDone(item.id);
     };
@@ -45,10 +47,12 @@ export function TaskItem({ item, onTaskDone, onItemEdited }: TaskItemProps) {
 
     return (
         <ListItem>
-            {item.createdBy?.isAdmin && <TaskDoneButton />}
+            {item.createdBy?.isAdmin === true && <TaskDoneButton />}
             
             <DisplayTask item={item} />
 
+            {item.available && <AssignTask taskId={item.id} onTaskAssigned={onTaskAssigned} />}
+            
             {canModify && <EditTask className="ml-auto" item={item} onItemEdited={handleTaskEdited} />}
         </ListItem>
     )
