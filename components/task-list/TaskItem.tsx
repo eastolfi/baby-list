@@ -2,6 +2,8 @@ import { useUser } from '@auth0/nextjs-auth0';
 
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+// import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ClearIcon from '@material-ui/icons/Clear';
 import DoneIcon from '@material-ui/icons/Done';
 
@@ -40,6 +42,7 @@ export function TaskItem({ item, onTaskDone, onItemEdited, onTaskAssigned }: Tas
 
     const { user } = useUser();
     const canModify = (!item.done && item.createdBy && user) ? item.createdBy?.email === user?.email : false;
+    const canAssign = canModify || item.available;
 
     const handleTaskEdited = (task: Task) => {
         onItemEdited(task);
@@ -47,13 +50,18 @@ export function TaskItem({ item, onTaskDone, onItemEdited, onTaskAssigned }: Tas
 
     return (
         <ListItem>
-            {item.createdBy?.isAdmin === true && <TaskDoneButton />}
+            {item.createdBy?.isAdmin === true && (
+            <ListItemAvatar>
+                <TaskDoneButton />
+            </ListItemAvatar>)}
             
             <DisplayTask item={item} />
 
-            {item.available && <AssignTask taskId={item.id} onTaskAssigned={onTaskAssigned} />}
-            
+            {/* <ListItemSecondaryAction> */}
+            {canAssign && <AssignTask task={item} onTaskAssigned={onTaskAssigned} />}
+
             {canModify && <EditTask className="ml-auto" item={item} onItemEdited={handleTaskEdited} />}
+            {/* </ListItemSecondaryAction> */}
         </ListItem>
     )
 }

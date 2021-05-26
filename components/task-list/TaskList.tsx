@@ -12,7 +12,7 @@ interface TaskListElementsProps {
 
 export function TaskList({ elements, onTaskDone, onItemEdited, onTaskAssigned }: TaskListElementsProps) {
     return (
-        <List component="ul" className="w-full sm:w-5/12">
+        <List component="ul" className="w-full sm:w-10/12 md:w-8/12">
             {elements.map((item: Task) => (
                 <TaskItem
                     key={item.id}

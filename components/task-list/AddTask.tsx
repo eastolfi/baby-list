@@ -60,7 +60,7 @@ export function AddTask({ item, onItemAdd, onItemEdit }: AddTaskProps) {
         <FieldGroup
             control={form}
             render={( { value, invalid }: AbstractControl ) => (
-                <form className="flex flex-row flex-wrap mx-auto w-full sm:w-5/12" onSubmit={e => handleSubmit(e, value)} >
+                <form className="flex flex-row flex-wrap mx-auto w-full sm:w-10/12 md:w-8/12" onSubmit={e => handleSubmit(e, value)} >
                     <div className="w-8/12 mb-5">
                         <FieldControl name="title" render={TextInput} meta={{ label: "Título" }} />
                     </div>
