@@ -1,4 +1,5 @@
 module.exports = {
+    important: true,
     purge: [],
     darkMode: false, // or 'media' or 'class'
     theme: {
@@ -9,7 +10,9 @@ module.exports = {
         },
     },
     variants: {
-        extend: {},
+        extend: {
+            width: ['responsive', 'hover', 'focus']
+        },
     },
     plugins: [],
 }

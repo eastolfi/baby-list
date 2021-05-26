@@ -34,7 +34,7 @@ export default function Navigation(_props: NavigationProps) {
         // Change to loading layout
         return (
             <BottomNavigation className={navigationClasses}>
-                <BottomNavigationAction label="Cargando..." value="/" icon={<LoopTwoToneIcon />} />
+                <BottomNavigationAction label="Cargando..." value="" icon={<LoopTwoToneIcon />} />
             </BottomNavigation>
         )
     }
