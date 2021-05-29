@@ -14,6 +14,9 @@ export default withApiAuthRequired(async (_req: NextApiRequest, res: NextApiResp
                         isAdmin: true
                     }
                 }
+            },
+            orderBy: {
+                title: 'asc'
             }
         });
 
