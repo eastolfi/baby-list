@@ -3,7 +3,7 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { Task } from '@prisma/client'
 
 import prisma from '../../../lib/prisma';
-import { Task as TaskFront } from '../../task-list';
+import { Task as TaskFront } from '../../../models/';
 
 export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
     const { task } = JSON.parse(req.body) as {task: TaskFront};
@@ -19,6 +19,7 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
                 where: { id: task.id },
                 data: {
                     title: task.title,
+                    link: task.link,
                     assigned: task.assigned,
                     available: !task.assigned
                 }

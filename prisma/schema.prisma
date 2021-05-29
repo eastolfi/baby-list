@@ -13,6 +13,8 @@ generator client {
 model Task {
   id        String   @id @default(uuid())
   title     String
+  link      String?
+  picture   String?
   done      Boolean? @default(false)
   available Boolean? @default(true)
   assigned  String?

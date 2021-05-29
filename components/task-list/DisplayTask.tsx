@@ -1,6 +1,6 @@
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { Task } from '../../pages/task-list';
+import { Task } from '../../models';
 
 interface DisplayTaskProps {
     item: Task;

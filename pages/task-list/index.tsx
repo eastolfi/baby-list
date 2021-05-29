@@ -1,32 +1,23 @@
 import { useEffect, useState } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
+import Divider from '@material-ui/core/Divider';
+
 import Layout from '../../components/Layout';
 import { AddTask } from '../../components/task-list/AddTask';
 import { TaskList } from '../../components/task-list/TaskList';
-import { fetcher } from '../../lib/fetchJson';
-
-export interface User {
-    email: string;
-    isAdmin: boolean;
-}
-export interface Task {
-    id: string;
-    title: string;
-    done?: boolean;
-    available?: boolean;
-    assigned?: string;
-    createdBy?: User;
-}
+import { CallbackData, Task } from '../../models';
+import useTaskService from '../../lib/services/task.service';
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
+    const taskService = useTaskService();
 
     const searchTasks = () => {
-        fetcher('/api/tasks/search', { method: 'POST' })
-        .then(({ tasks }: { tasks: Task[] }) => {
+        taskService.searchTasks()
+        .then((tasks: Task[]) => {
             setItems(tasks);
         }).catch(error => {
             console.error(error);
@@ -37,18 +28,12 @@ export default function TaskListPage() {
         searchTasks();
     }, []);
 
-    const handleMarkTaskDone = (taskId: string) => {
-        fetcher('/api/tasks/done', { method: 'POST', body: JSON.stringify({ taskId }) })
-        .then(() => {
-            searchTasks();
-        }).catch(error => {
-            console.error(error);
-        });
-    }
+    const refreshTasksIfSuccess = (error: Error | null, data?: CallbackData) => {
+        if (!error) {
+            if (data?.assigned) {
+                console.log(`Task assigned to ${data.assigned}`);
+            }
 
-    const handleTaskAssigned = (done: boolean, assigned?: string, error?: Error) => {
-        if (done) {
-            console.log(`Task assigned to ${assigned}`);
             searchTasks();
         } else {
             alert(`An error occured - ${error?.message || error || 'Contact support'}`);
@@ -57,7 +42,7 @@ export default function TaskListPage() {
 
     const handleTaskAdded = (task: Omit<Task, 'id'>): Promise<void> => {
         return new Promise((resolve, reject) => {
-            return fetcher('/api/tasks/add', { method: 'POST', body: JSON.stringify({ task }) })
+            return taskService.addTask(task)
             .then(() => {
                 searchTasks();
                 resolve();
@@ -68,25 +53,20 @@ export default function TaskListPage() {
         })
     };
 
-    const handleTaskEdited = (task: Task) => {
-        fetcher('/api/tasks/edit', { method: 'POST', body: JSON.stringify({ task }) })
-        .then(() => {
-            searchTasks();
-        }).catch(error => {
-            console.error(error);
-        });
-    }
-
     return (
         <Layout>
             <div className="flex flex-col items-center">
-                <AddTask onItemAdd={ handleTaskAdded } />
+                <div className="">
+                    <AddTask onItemAdd={ handleTaskAdded } />
+                </div>
+
+                <Divider className="w-full" variant="middle" />
 
                 <TaskList
                     elements={items}
-                    onTaskDone={handleMarkTaskDone}
-                    onItemEdited={handleTaskEdited}
-                    onTaskAssigned={handleTaskAssigned}
+                    onTaskDone={refreshTasksIfSuccess}
+                    onItemEdited={refreshTasksIfSuccess}
+                    onTaskAssigned={refreshTasksIfSuccess}
                 ></TaskList>
             </div>
         </Layout>

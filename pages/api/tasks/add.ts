@@ -23,6 +23,7 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
         const newTask: Task = await prisma.task.create({
             data: {
                 title: task.title,
+                link: task.link,
                 available: task.assigned ? false : true,
                 assigned: task.assigned,
                 userId: user.id
