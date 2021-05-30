@@ -33,16 +33,6 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
         });
     };
 
-    const handleTaskEdited = (editedTask: Task) => {
-        taskService.editTask(editedTask)
-        .then(() => {
-            onItemEdited && onItemEdited(null);
-        }).catch(error => {
-            console.error(error);
-            onItemEdited && onItemEdited(error);
-        });
-    };
-
     const TaskDoneButton = () => {
         if (task.done) {
             return (
@@ -80,7 +70,7 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
 
             {canAssign && <AssignTask task={task} onTaskAssigned={onTaskAssigned} />}
 
-            {canModify && <EditTask className="ml-auto" item={task} onItemEdited={handleTaskEdited} />}
+            {canModify && <EditTask className="ml-auto" item={task} onItemEdited={onItemEdited} />}
         </ListItem>
     )
 }

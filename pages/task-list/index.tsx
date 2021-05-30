@@ -40,24 +40,11 @@ export default function TaskListPage() {
         }
     }
 
-    const handleTaskAdded = (task: Omit<Task, 'id'>): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            return taskService.addTask(task)
-            .then(() => {
-                searchTasks();
-                resolve();
-            }).catch(error => {
-                console.error(error);
-                reject(error);
-            });
-        })
-    };
-
     return (
         <Layout>
             <div className="flex flex-col items-center">
                 <div className="">
-                    <AddTask onItemAdd={ handleTaskAdded } />
+                    <AddTask onItemAdd={ refreshTasksIfSuccess } />
                 </div>
 
                 <Divider className="w-full" variant="middle" />

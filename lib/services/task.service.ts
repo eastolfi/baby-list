@@ -11,8 +11,14 @@ export class TaskService {
         return fetcher('/api/tasks/done', { method: 'POST', body: JSON.stringify({ taskId }) });
     }
 
-    public addTask(task: Omit<Task, 'id'>): Promise<void> {
-        return fetcher('/api/tasks/add', { method: 'POST', body: JSON.stringify({ task }) });
+    public addTask(task: Omit<Task, 'id'>, callback?: (error?: Error) => void): Promise<void> | void {
+        const f = fetcher('/api/tasks/add', { method: 'POST', body: JSON.stringify({ task }) });
+
+        if (callback) {
+            f.then(() => callback()).catch(error => callback(error));
+        } else {
+            return f;
+        }
     }
 
     public editTask(task: Task): Promise<void> {
