@@ -20,7 +20,7 @@ export default function Layout({ children }: LayoutProps) {
             <Header />
 
             <main>
-                <div className="mx-auto my-5 px-5">
+                <div className="mx-auto my-5 px-2">
                     { children }
                 </div>
             </main>

@@ -10,12 +10,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import LinkIcon from '@material-ui/icons/Link';
 // import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 // import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 import useTaskService from '../../lib/services/task.service';
 import { TextInput } from '../TextInput';
 import { Task, ServiceCallback } from '../../models';
@@ -206,12 +211,18 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
                         </div>
 
                         <div className="w-8/12 mb-5">
-                            <FieldControl name="assigned" render={TextInput} meta={{
-                                label: "Asignado a",
-                                inputProps: {
-                                    startAdornment: <InputAdornment position="start">@</InputAdornment>
-                                }
-                            }} />
+                            <Accordion>
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>Más</AccordionSummary>
+
+                                <AccordionDetails>
+                                    <FieldControl name="assigned" render={TextInput} meta={{
+                                        label: "Asignado a",
+                                        inputProps: {
+                                            startAdornment: <InputAdornment position="start">@</InputAdornment>
+                                        }
+                                    }} />
+                                </AccordionDetails>
+                            </Accordion>
                         </div>
 
                         <div className="w-4/12 mb-5 text-center">

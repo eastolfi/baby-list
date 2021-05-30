@@ -20,7 +20,7 @@ export function TaskList({ elements, onTaskDone, onItemEdited, onTaskAssigned }:
     ]
 
     return (
-        <List component="ul" className="w-full sm:w-10/12 md:w-8/12 max-h-2/4-screen overflow-y-auto">
+        <List component="ul" className="w-full sm:w-10/12 md:w-8/12 overflow-y-auto overflow-x-hidden" style={{ maxHeight: '67vh' }}>
             {filteredElements.map((item: Task | string) => {
                 if (item === 'DIVIDER') return <Divider key='DIVIDER' className="w-full" variant="middle" />
 
