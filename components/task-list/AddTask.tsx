@@ -16,15 +16,10 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import LinkIcon from '@material-ui/icons/Link';
 // import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 // import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
-
+import useTaskService from '../../lib/services/task.service';
 import { TextInput } from '../TextInput';
-import { Task } from '../../models';
+import { Task, ServiceCallback } from '../../models';
 
-interface AddTaskProps {
-    item?: Task;
-    onItemAdd?: (item: Omit<Task, 'id'>) => Promise<void>;
-    onItemEdit?: (item: Task) => void;
-}
 interface FormModel {
     title: string;
     // link?: string;
@@ -73,7 +68,13 @@ function PromptComponent({ open, title, label, initial, onClose }: { open: boole
     )
 }
 
-export function AddTask({ item, onItemAdd, onItemEdit }: AddTaskProps) {
+interface AddTaskProps {
+    item?: Task;
+    onItemAdd?: ServiceCallback;
+    editTask?: (task: Task) => void;
+}
+
+export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ dialogOpener, setDialogOpener ] = useState('');
     const [ dialogTitle, setDialogTitle ] = useState('');
@@ -100,22 +101,29 @@ export function AddTask({ item, onItemAdd, onItemEdit }: AddTaskProps) {
     // useEffect(() => {
     //     setPicture(item.picture);
     // }, [])
-
-    const addOrEditTask = ({ title, assigned }: FormModel) => {
+    const taskService = useTaskService();
+    const addOrEditTask = ({ title, assigned }: FormModel, reset: (value?: any, options?: Object) => void) => {
         const newTask: Omit<Task, 'id'> = {
             title,
             link,
             picture,
             assigned
         };
-
-        // Use callback ?
-        if (onItemAdd) {
-            onItemAdd(newTask).then(() => form.reset());
+        
+        if (!item) {
+            taskService.addTask(newTask, (error) => {
+                if (error) {
+                    onItemAdd && onItemAdd(error);
+                } else {
+                    onItemAdd && onItemAdd(null);
+                    reset();
+                    setLink('');
+                }
+            });
         }
-
-        if (onItemEdit) {
-            onItemEdit({
+        
+        if (item) {
+            editTask && editTask({
                 ...item,
                 title,
                 link,
@@ -124,9 +132,10 @@ export function AddTask({ item, onItemAdd, onItemEdit }: AddTaskProps) {
         }
     }
 
-    const handleSubmit = (e: FormEvent, value: FormModel) => {
-        e.preventDefault();
-        addOrEditTask(value);
+    const handleSubmit = (value: FormModel, reset: (value?: any, options?: Object) => void, e?: FormEvent) => {
+        e?.preventDefault();
+
+        addOrEditTask(value, reset);
     }
 
     const handleAddLink = () => {
@@ -176,8 +185,8 @@ export function AddTask({ item, onItemAdd, onItemEdit }: AddTaskProps) {
             <FieldGroup
                 control={form}
                 strict={false}
-                render={( { value, invalid }: AbstractControl ) => (
-                    <form className="flex flex-row flex-wrap mx-auto w-full sm:w-10/12 md:w-8/12" onSubmit={e => handleSubmit(e, value)} >
+                render={( { value, invalid, reset }: AbstractControl ) => (
+                    <form className="flex flex-row flex-wrap mx-auto w-full sm:w-10/12 md:w-8/12" onSubmit={e => handleSubmit(value, reset, e)} >
                         <div className="w-8/12 mb-5">
                             <FieldControl name="title" render={TextInput} meta={{ label: "Título" }} />
                         </div>
@@ -208,9 +217,9 @@ export function AddTask({ item, onItemAdd, onItemEdit }: AddTaskProps) {
                         <div className="w-4/12 mb-5 text-center">
                             <IconButton
                                 color="primary"
-                                disabled={false && invalid}
+                                disabled={invalid}
                                 aria-label="add task"
-                                onClick={() => addOrEditTask(value)}
+                                onClick={() => handleSubmit(value, reset)}
                                 >
                                 {item ? <CheckCircleOutlineIcon fontSize="large" /> : <AddCircleOutlineIcon fontSize="large" />}
                             </IconButton>
