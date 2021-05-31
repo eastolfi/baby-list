@@ -9,6 +9,8 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
+import { useLoading } from '../../lib/context';
+
 import { AssignTask } from './AssignTask';
 import { DisplayTask } from './DisplayTask';
 import { EditTask } from './EditTask';
@@ -22,12 +24,17 @@ interface TaskItemProps {
 
 export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: TaskItemProps) {
     const taskService = useTaskService();
+    const { showLoading, hideLoading } = useLoading();
 
     const handleToggleTaskDone = () => {
+        showLoading();
+
         taskService.toggleTaskDone(task.id)
         .then(() => {
+            hideLoading();
             onTaskDone && onTaskDone(null);
         }).catch(error => {
+            hideLoading();
             console.error(error);
             onTaskDone && onTaskDone(error);
         });

@@ -4,10 +4,11 @@ import EditIcon from '@material-ui/icons/Edit';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 
-import { AddTask } from './AddTask';
-import { ServiceCallback, Task } from '../../models';
 import useTaskService from '../../lib/services/task.service';
+import { ServiceCallback, Task } from '../../models';
+import { useLoading } from '../../lib/context';
 
+import { AddTask } from './AddTask';
 
 function EditModal({ open, item, onClose }: { open: boolean, item: Task, onClose: (updatedItem?: Task) => void }) {
     const handleClose = () => {
@@ -37,6 +38,7 @@ type EditTaskProps = {
 export function EditTask({ item, className, onItemEdited }: EditTaskProps) {
     const [open, setOpen] = useState(false);
     const taskService = useTaskService();
+    const { showLoading, hideLoading } = useLoading();
 
     const handleOpenModalEdit = () => {
         setOpen(true);
@@ -46,10 +48,14 @@ export function EditTask({ item, className, onItemEdited }: EditTaskProps) {
         setOpen(false);
         
         if (updatedItem) {
+            showLoading();
+
             taskService.editTask(updatedItem)
             .then(() => {
+                hideLoading();
                 onItemEdited && onItemEdited(null);
             }).catch(error => {
+                hideLoading();
                 console.error(error);
                 onItemEdited && onItemEdited(error);
             });

@@ -5,6 +5,7 @@ import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
+import { useLoading } from '../../lib/context';
 interface AssignTaskProps {
     task: Task;
     className?: string;
@@ -13,16 +14,21 @@ interface AssignTaskProps {
 
 export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps) {
     const taskService = useTaskService();
+    const { showLoading, hideLoading } = useLoading();
 
     const handleAssignTask = () => {
         const message = task.available ? '¿Quieres asignarte a esta tarea? Si no has creado esta tarea, no podrás desasignarte después.' :
         '¿Quieres deasignarte de esta tarea?';
 
         if (confirm(message)) {
+            showLoading();
+
             taskService.assignTask(task)
             .then((assigned: string) => {
+                hideLoading();
                 onTaskAssigned && onTaskAssigned(null, { assigned });
             }).catch(error => {
+                hideLoading();
                 onTaskAssigned && onTaskAssigned(error);
             });
         }

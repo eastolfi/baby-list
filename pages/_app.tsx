@@ -1,16 +1,17 @@
+import { useEffect } from 'react';
 import { AppProps } from 'next/dist/next-server/lib/router/router';
-import Head from 'next/head';
 import { SWRConfig } from 'swr';
 import { UserProvider } from '@auth0/nextjs-auth0';
+import Head from 'next/head';
 
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { fetcher } from '../lib/fetchJson';
 import { theme } from '../lib/theme';
+import { AppProvider } from '../lib/context';
 
 import '../styles/global.scss';
-import { useEffect } from 'react';
 
 export default function App({ Component, pageProps }: AppProps) {
     useEffect(() => {
@@ -35,9 +36,11 @@ export default function App({ Component, pageProps }: AppProps) {
                 }}
             >
                 <ThemeProvider theme={theme}>
-                    <CssBaseline />
+                    <AppProvider>
+                        <CssBaseline />
 
-                    <Component {...pageProps} />
+                        <Component {...pageProps} />
+                    </AppProvider>
                 </ThemeProvider>
             </SWRConfig>
         </UserProvider>

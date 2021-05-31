@@ -8,19 +8,25 @@ import { AddTask } from '../../components/task-list/AddTask';
 import { TaskList } from '../../components/task-list/TaskList';
 import { CallbackData, Task } from '../../models';
 import useTaskService from '../../lib/services/task.service';
+import { useLoading } from '../../lib/context';
 
 export const getServerSideProps = withPageAuthRequired();
 
 export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
     const taskService = useTaskService();
+    const { showLoading, hideLoading } = useLoading();
 
     const searchTasks = () => {
+        showLoading();
+
         taskService.searchTasks()
         .then((tasks: Task[]) => {
             setItems(tasks);
+            hideLoading();
         }).catch(error => {
             console.error(error);
+            hideLoading();
         });
     }
     
@@ -43,9 +49,7 @@ export default function TaskListPage() {
     return (
         <Layout>
             <div className="flex flex-col items-center">
-                <div className="">
-                    <AddTask onItemAdd={ refreshTasksIfSuccess } />
-                </div>
+                <AddTask onItemAdd={ refreshTasksIfSuccess } />
 
                 <Divider className="w-full" variant="middle" />
 

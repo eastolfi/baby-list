@@ -24,6 +24,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import useTaskService from '../../lib/services/task.service';
 import { TextInput } from '../TextInput';
 import { Task, ServiceCallback } from '../../models';
+import { useLoading } from '../../lib/context';
 
 interface FormModel {
     title: string;
@@ -86,6 +87,7 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
     const [ dialogLabel, setDialogLabel ] = useState('');
     const [ link, setLink ] = useState(item?.link || '')
     const [ picture, setPicture ] = useState('')
+    const { showLoading, hideLoading } = useLoading();
 
     const form = FormBuilder.group({
         title: ['', Validators.required],
@@ -116,10 +118,14 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
         };
         
         if (!item) {
+            showLoading();
+
             taskService.addTask(newTask, (error) => {
                 if (error) {
+                    hideLoading();
                     onItemAdd && onItemAdd(error);
                 } else {
+                    hideLoading();
                     onItemAdd && onItemAdd(null);
                     reset();
                     setLink('');
