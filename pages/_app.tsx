@@ -8,8 +8,8 @@ import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { fetcher } from '../lib/fetchJson';
-import { theme } from '../lib/theme';
-import { AppProvider } from '../lib/context';
+import { createTheme } from '../lib/theme';
+import { AppProvider, useLocale } from '../lib/context';
 
 import '../styles/global.scss';
 
@@ -21,6 +21,8 @@ export default function App({ Component, pageProps }: AppProps) {
             jssStyles.parentElement?.removeChild(jssStyles);
         }
     }, []);
+
+    const { lang } = useLocale()
 
     return (
         <UserProvider>
@@ -35,13 +37,13 @@ export default function App({ Component, pageProps }: AppProps) {
                     }
                 }}
             >
-                <ThemeProvider theme={theme}>
-                    <AppProvider>
+                <AppProvider>
+                    <ThemeProvider theme={createTheme(lang)}>
                         <CssBaseline />
 
                         <Component {...pageProps} />
-                    </AppProvider>
-                </ThemeProvider>
+                    </ThemeProvider>
+                </AppProvider>
             </SWRConfig>
         </UserProvider>
     )
