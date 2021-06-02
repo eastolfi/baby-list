@@ -1,11 +1,15 @@
 import { useUser } from '@auth0/nextjs-auth0';
 
 import Typography from '@material-ui/core/Typography';
+import { useTranslation } from 'react-i18next';
 
 import Layout from '../components/Layout'
 
 export default function Home() {
     const { user } = useUser();
+    const { t } = useTranslation();
+
+    console.log(t('pruebas'));
 
     return (
         <Layout>

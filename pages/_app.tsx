@@ -9,7 +9,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { fetcher } from '../lib/fetchJson';
 import { createTheme } from '../lib/theme';
+
 import { AppProvider, useLocale } from '../lib/context';
+import '../lib/i18n/i18n';
 
 import '../styles/global.scss';
 
@@ -22,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
         }
     }, []);
 
-    const { lang } = useLocale()
+    const { lang } = useLocale();
 
     return (
         <UserProvider>
@@ -38,7 +40,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 }}
             >
                 <AppProvider>
-                    <ThemeProvider theme={createTheme(lang)}>
+                    <ThemeProvider theme={createTheme(lang.code)}>
                         <CssBaseline />
 
                         <Component {...pageProps} />

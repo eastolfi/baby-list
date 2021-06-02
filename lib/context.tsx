@@ -1,10 +1,11 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
-import { esES, Localization } from '@material-ui/core/locale';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Loading } from '../components/Loading';
+import { Languages } from './i18n/languages';
 
 type LoaderState = { loading: boolean, showLoading: () => void, hideLoading: () => void };
-type LocaleState = { lang: Localization, changeLang: (locale: Localization) => void };
+type LocaleState = { lang: Languages, changeLang: (locale: Languages) => void };
 type State = { loader: LoaderState, locale: LocaleState };
 
 type AppProviderProps = { children: ReactNode }
@@ -15,14 +16,19 @@ const AppContext = createContext<State>({
         showLoading: () => undefined,
         hideLoading: () => undefined,
     }, locale: {
-        lang: esES,
-        changeLang: (_locale: Localization) => undefined,
+        lang: Languages.ES,
+        changeLang: (_lang: Languages) => undefined,
     }
 });
 
 function AppProvider({ children }: AppProviderProps) {
     const [ loading, setLoading ] = useState(false);
-    const [ lang, setLang ] = useState(esES);
+    const [ lang, setLang ] = useState(Languages.ES);
+    const { i18n } = useTranslation();
+
+    useEffect(() => {
+        i18n.changeLanguage(lang.code);
+    }, [lang]);
 
     const value: State = {
         loader: {
@@ -31,7 +37,7 @@ function AppProvider({ children }: AppProviderProps) {
             hideLoading: () => setLoading(false),
         }, locale: {
             lang,
-            changeLang: (locale: Localization) => setLang(locale)
+            changeLang: (lang: Languages) => setLang(lang)
         }
     };
 
