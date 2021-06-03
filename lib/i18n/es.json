@@ -1,0 +1,42 @@
+{
+    "global": {
+        "buttons": {
+            "cancel": "Cancelar",
+            "confirm": "Confirmar",
+            "more": "Más"
+        }
+    },
+    "home": {
+        "greeting": {
+            "connected": "Utilize la barra de navegación infererior para acceder a las distintas funcionalidades",
+            "not-connected": "Por favor, inicie sesión para acceder a las funcionalidades"
+        }
+    },
+    "tasks": {
+        "actions": {
+            "add": "Añadir tarea",
+            "edit": "Editar tarea",
+            "open": "Abrir enlace",
+            "complete": "Completar tarea",
+            "uncomplete": "Reabrir tarea",
+            "assign": {
+                "title": "Asignar tarea",
+                "confirm": "¿Quieres asignarte a esta tarea? Si no has creado esta tarea, no podrás desasignarte después."
+            },
+            "unassign": {
+                "title": "Desasignar tarea",
+                "confirm": "¿Quieres deasignarte de esta tarea?"
+            }
+        },
+        "title": {
+            "label": "Título"
+        },
+        "assigned": {
+            "label": "Asignado a"
+        },
+        "link": {
+            "label": "Enlace",
+            "add": "Añadir enlace"
+        }
+    }
+}

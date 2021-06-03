@@ -1,0 +1,42 @@
+{
+    "global": {
+        "buttons": {
+            "cancel": "Annuler",
+            "confirm": "Confirmer",
+            "more": "Plus"
+        }
+    },
+    "home": {
+        "greeting": {
+            "connected": "Utilize la barra de navegación infererior para acceder a las distintas funcionalidades",
+            "not-connected": "Por favor, inicie sesión para acceder a las funcionalidades"
+        }
+    },
+    "tasks": {
+        "actions": {
+            "add": "Ajouter tâche",
+            "edit": "Modifier tâche",
+            "open": "Ouvrir lien",
+            "complete": "Fermer tâche",
+            "uncomplete": "Reouvrir tâche",
+            "assign": {
+                "title": "Affecter tâche",
+                "confirm": "¿Quieres asignarte a esta tâche? Si no has creado esta tâche, no podrás desasignarte después."
+            },
+            "unassign": {
+                "title": "Désaffecter tâche",
+                "confirm": "¿Quieres deasignarte de esta tâche?"
+            }
+        },
+        "title": {
+            "label": "Titre"
+        },
+        "assigned": {
+            "label": "Affecté à"
+        },
+        "link": {
+            "label": "Lien",
+            "add": "Ajouter lien"
+        }
+    }
+}

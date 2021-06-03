@@ -27,6 +27,12 @@ function AppProvider({ children }: AppProviderProps) {
     const { i18n } = useTranslation();
 
     useEffect(() => {
+        const userLang = localStorage.getItem('user-lang') || Languages.fromNavigator();
+        setLang(Languages.findByCode(userLang));
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('user-lang', lang.code);
         i18n.changeLanguage(lang.code);
     }, [lang]);
 

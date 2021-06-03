@@ -1,21 +1,18 @@
 import AppBar from '@material-ui/core/AppBar';
-import InputBase from '@material-ui/core/InputBase';
+// import InputBase from '@material-ui/core/InputBase';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import SearchIcon from '@material-ui/icons/Search';
+// import SearchIcon from '@material-ui/icons/Search';
 
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { useLocale } from '../lib/context';
 import { Languages } from '../lib/i18n/languages';
 
-type TwoLabelSwitchProps = { valueRight: string, valueLeft: string, className?: string, onChange?: (value: string) => void };
-function TwoLabelSwitch({ valueLeft = 'On', valueRight = 'Off', className, onChange }: TwoLabelSwitchProps) {
-    const [ checked, setChecked ] = useState(false);
-
+type TwoLabelSwitchProps = { checked: boolean, valueRight: string, valueLeft: string, className?: string, onChange?: (value: string) => void };
+function TwoLabelSwitch({ checked, valueLeft = 'On', valueRight = 'Off', className, onChange }: TwoLabelSwitchProps) {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setChecked(event.target.checked);
         onChange && onChange(event.target.checked ? valueRight : valueLeft);
     };
 
@@ -31,10 +28,10 @@ function TwoLabelSwitch({ valueLeft = 'On', valueRight = 'Off', className, onCha
 }
 
 export default function Header() {
-    const { changeLang } = useLocale();
+    const { lang, changeLang } = useLocale();
     
     const handleLangSwitchChange = (value: string) => {
-        changeLang(Languages.findBy(value));
+        changeLang(Languages.findByLabel(value));
     }
 
     return (
@@ -43,9 +40,13 @@ export default function Header() {
                 <Typography variant="h6" className="flex-grow hidden sm:block">Baby List</Typography>
 
                 <div className="flex content-around relative ml-0 w-full sm:ml-1 sm:w-auto">
-                    <TwoLabelSwitch className="mr-1" valueLeft={ Languages.ES.label } valueRight={ Languages.FR.label } onChange={handleLangSwitchChange} />
+                    <TwoLabelSwitch className="mr-1"
+                        checked={ lang.label === Languages.FR.label }
+                        valueLeft={ Languages.ES.label }
+                        valueRight={ Languages.FR.label }
+                        onChange={handleLangSwitchChange} />
 
-                    <div className="bg-white bg-opacity-20">
+                    {/* <div className="bg-white bg-opacity-20">
                         <div className="absolute flex items-center justify-center h-full px-3 pointer-events-none"><SearchIcon /></div>
                         <InputBase
                             placeholder="Search…"
@@ -55,7 +56,7 @@ export default function Header() {
                             }}
                             inputProps={{ 'aria-label': 'search' }} />
                         
-                    </div>
+                    </div> */}
                 </div>
             </Toolbar>
         </AppBar>

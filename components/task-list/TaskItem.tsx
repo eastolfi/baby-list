@@ -1,4 +1,5 @@
 import { useUser } from '@auth0/nextjs-auth0';
+import { useTranslation } from 'react-i18next';
 
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
@@ -23,6 +24,7 @@ interface TaskItemProps {
 }
 
 export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: TaskItemProps) {
+    const { t } = useTranslation();
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
 
@@ -43,13 +45,13 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
     const TaskDoneButton = () => {
         if (task.done) {
             return (
-                <IconButton aria-label="uncomplete task" color="secondary" onClick={handleToggleTaskDone}>
+                <IconButton aria-label={t('tasks.actions.uncomplete')} color="secondary" onClick={handleToggleTaskDone}>
                     <ClearIcon />
                 </IconButton>
             )
         } else {
             return (
-                <IconButton aria-label="complete task" color="primary" onClick={handleToggleTaskDone}>
+                <IconButton aria-label={t('tasks.actions.complete')} color="primary" onClick={handleToggleTaskDone}>
                     <DoneIcon />
                 </IconButton>
             )
@@ -71,7 +73,7 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
             <DisplayTask item={task} />
 
             {task.link && 
-            <a aria-label="open task" color="secondary" href={task.link} target="_blank" rel="noopener noreferrer">
+            <a aria-label={t('tasks.actions.open')} color="secondary" href={task.link} target="_blank" rel="noopener noreferrer">
                 <OpenInNewIcon />
             </a>}
 

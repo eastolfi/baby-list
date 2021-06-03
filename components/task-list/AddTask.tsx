@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { AbstractControl, FieldControl, FieldGroup, FormBuilder, Validators } from 'react-reactive-form';
+import { useTranslation } from 'react-i18next';
 
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -34,6 +35,7 @@ interface FormModel {
 }
 
 function PromptComponent({ open, title, label, initial, onClose }: { open: boolean, title: string, label: string, initial: string, onClose: (value?: string) => void }) {
+    const { t } = useTranslation();
     const [ value, setValue ] = useState('');
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -64,10 +66,10 @@ function PromptComponent({ open, title, label, initial, onClose }: { open: boole
 
             <DialogActions>
                 <Button onClick={() => handleClose()} color="secondary">
-                    Cancelar
+                    { t('global.buttons.cancel') }
                 </Button>
                 <Button onClick={() => handleClose(value.trim())} color="primary">
-                    Confirmar
+                    { t('global.buttons.confirm') }
                 </Button>
             </DialogActions>
         </Dialog>
@@ -81,6 +83,7 @@ interface AddTaskProps {
 }
 
 export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
+    const { t } = useTranslation();
     const [ dialogOpen, setDialogOpen ] = useState(false);
     const [ dialogOpener, setDialogOpener ] = useState('');
     const [ dialogTitle, setDialogTitle ] = useState('');
@@ -150,8 +153,8 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
     }
 
     const handleAddLink = () => {
-        setDialogTitle('Añadir enlace');
-        setDialogLabel('Enlace');
+        setDialogTitle(t('tasks.link.add'));
+        setDialogLabel(t('tasks.link.label'));
         setDialogOpener('LINK');
         setDialogOpen(true);
     }
@@ -199,7 +202,7 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
                 render={( { value, invalid, reset }: AbstractControl ) => (
                     <form className="flex flex-row flex-wrap mx-auto w-full sm:w-10/12 md:w-8/12" onSubmit={e => handleSubmit(value, reset, e)} >
                         <div className="w-8/12 mb-5">
-                            <FieldControl name="title" render={TextInput} meta={{ label: "Título" }} />
+                            <FieldControl strict={false} name="title" render={TextInput} meta={{ label: t('tasks.title.label') }} />
                         </div>
 
                         <div className="w-4/12 mb-5 text-center">
@@ -218,11 +221,11 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
 
                         <div className="w-8/12 mb-5">
                             <Accordion>
-                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>Más</AccordionSummary>
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>{ t('global.buttons.more') }</AccordionSummary>
 
                                 <AccordionDetails>
                                     <FieldControl name="assigned" render={TextInput} meta={{
-                                        label: "Asignado a",
+                                        label: t('tasks.assigned.label'),
                                         inputProps: {
                                             startAdornment: <InputAdornment position="start">@</InputAdornment>
                                         }
@@ -235,7 +238,7 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
                             <IconButton
                                 color="primary"
                                 disabled={invalid}
-                                aria-label="add task"
+                                aria-label={t('tasks.actions.add')}
                                 onClick={() => handleSubmit(value, reset)}
                                 >
                                 {item ? <CheckCircleOutlineIcon fontSize="large" /> : <AddCircleOutlineIcon fontSize="large" />}

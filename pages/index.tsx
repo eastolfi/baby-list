@@ -9,21 +9,19 @@ export default function Home() {
     const { user } = useUser();
     const { t } = useTranslation();
 
-    console.log(t('pruebas'));
-
     return (
         <Layout>
             <div className="text-center">
 
                 {user && (
                     <Typography variant="h4" component="h1" gutterBottom>
-                        Utilize la barra de navegación infererior para acceder a las distintas funcionalidades
+                        {t('home.greeting.connected')}
                     </Typography>
                 )}
 
                 {!user && (
                     <Typography variant="h4" component="h1" gutterBottom>
-                        Por favor, inicie sesión para acceder a las funcionalidades
+                        {t('home.greeting.not-connected')}
                     </Typography>
                 )}
             </div>

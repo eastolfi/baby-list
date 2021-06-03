@@ -9,8 +9,21 @@ export class Languages {
     public static get ES(): Languages { return langES; };
     public static get FR(): Languages { return langFR; };
 
-    public static findBy(label: string): Languages {
+    public static findByCode(code: string): Languages {
+        return [langES, langFR].find((lang: Languages) => lang.code === code) || langES;
+    }
+    public static findByLabel(label: string): Languages {
         return [langES, langFR].find((lang: Languages) => lang.label === label) || langES;
+    }
+
+    public static fromNavigator(): string {
+        const lang = navigator.language.split('-')[0];
+
+        if (lang === 'fr') {
+            return 'FR';
+        } else {
+            return 'ES';
+        }
     }
 }
 

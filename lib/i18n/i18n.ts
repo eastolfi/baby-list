@@ -1,18 +1,10 @@
 import i18n, { Resource } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-const resources: Resource = {
-    esES: {
-        translation: {
-            pruebas: 'Holi'
-        }
-    },
-    frFR: {
-        translation: {
-            pruebas: 'Hi there'
-        }
-    }
-}
+import esES from './es.json';
+import frFR from './fr.json';
+
+const resources: Resource = { esES: { translation: esES }, frFR: { translation: frFR } };
 
 i18n
     .use(initReactI18next)

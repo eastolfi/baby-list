@@ -1,5 +1,6 @@
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
+import { useTranslation } from 'react-i18next';
 
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 
@@ -13,12 +14,13 @@ interface AssignTaskProps {
 }
 
 export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps) {
+    const { t } = useTranslation();
+
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
 
     const handleAssignTask = () => {
-        const message = task.available ? '¿Quieres asignarte a esta tarea? Si no has creado esta tarea, no podrás desasignarte después.' :
-        '¿Quieres deasignarte de esta tarea?';
+        const message = task.available ? t('tasks.actions.assign.confirm') : t('tasks.actions.unassign.confirm');
 
         if (confirm(message)) {
             showLoading();
@@ -37,12 +39,12 @@ export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps)
     return (
         <div className={className}>
             {task.available && (
-            <IconButton aria-label="assign task" color="primary" onClick={handleAssignTask}>
+            <IconButton aria-label={t('tasks.actions.assign.title')} color="primary" onClick={handleAssignTask}>
                 <AlternateEmailIcon />
             </IconButton>)}
 
             {!task.available && (
-            <IconButton aria-label="unassign task" color="primary" onClick={handleAssignTask}>
+            <IconButton aria-label={t('tasks.actions.unassign.title')} color="primary" onClick={handleAssignTask}>
                 <Badge color="secondary" badgeContent="X">
                     <AlternateEmailIcon />
                 </Badge>

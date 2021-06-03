@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -11,6 +13,8 @@ import { useLoading } from '../../lib/context';
 import { AddTask } from './AddTask';
 
 function EditModal({ open, item, onClose }: { open: boolean, item: Task, onClose: (updatedItem?: Task) => void }) {
+    const { t } = useTranslation();
+    
     const handleClose = () => {
         onClose();
     }
@@ -20,8 +24,9 @@ function EditModal({ open, item, onClose }: { open: boolean, item: Task, onClose
     }
 
     return (
-        <Dialog onClose={handleClose} aria-labelledby="Edit Task" open={open}>
-            <DialogTitle id="editTaskTitle">Editar elemento</DialogTitle>
+        <Dialog onClose={handleClose} aria-labelledby={t('tasks.actions.edit')} open={open}>
+            <DialogTitle id="editTaskTitle">{t('tasks.actions.edit')}</DialogTitle>
+
             <div className="p-2">
                 <AddTask item={item} editTask={handleTaskEdit} />
             </div>
@@ -36,6 +41,7 @@ type EditTaskProps = {
 }
 
 export function EditTask({ item, className, onItemEdited }: EditTaskProps) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
@@ -65,7 +71,7 @@ export function EditTask({ item, className, onItemEdited }: EditTaskProps) {
     return (
         <>
             <div className={className}>
-                <IconButton aria-label="edit task" color="secondary" onClick={handleOpenModalEdit}>
+                <IconButton aria-label={t('tasks.actions.edit')} color="secondary" onClick={handleOpenModalEdit}>
                     <EditIcon />
                 </IconButton>
             </div>
