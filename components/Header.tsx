@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 import { ChangeEvent } from 'react';
-import { useLocale } from '../lib/context';
+import { useLocale } from '../lib/context/app.context';
 import { Languages } from '../lib/i18n/languages';
 
 type TwoLabelSwitchProps = { checked: boolean, valueRight: string, valueLeft: string, className?: string, onChange?: (value: string) => void };

@@ -8,7 +8,7 @@ import Dialog from '@material-ui/core/Dialog';
 
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
-import { useLoading } from '../../lib/context';
+import { useLoading } from '../../lib/context/app.context';
 
 import { AddTask } from './AddTask';
 

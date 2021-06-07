@@ -10,7 +10,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
-import { useLoading } from '../../lib/context';
+import { useLoading } from '../../lib/context/app.context';
 
 import { AssignTask } from './AssignTask';
 import { DisplayTask } from './DisplayTask';
@@ -59,6 +59,7 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
     }
 
     const { user } = useUser();
+    // Change to context
     const canToggleDone = user?.isAdmin === true;
     const canModify = (!task.done && task.createdBy && user) ? task.createdBy?.email === user?.email : false;
     const canAssign = canModify || task.available;

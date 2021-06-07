@@ -8,7 +8,7 @@ import { AddTask } from '../../components/task-list/AddTask';
 import { TaskList } from '../../components/task-list/TaskList';
 import { CallbackData, Task } from '../../models';
 import useTaskService from '../../lib/services/task.service';
-import { useLoading } from '../../lib/context';
+import { useLoading } from '../../lib/context/app.context';
 
 export const getServerSideProps = withPageAuthRequired();
 

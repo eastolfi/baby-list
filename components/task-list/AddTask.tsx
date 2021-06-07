@@ -25,7 +25,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import useTaskService from '../../lib/services/task.service';
 import { TextInput } from '../TextInput';
 import { Task, ServiceCallback } from '../../models';
-import { useLoading } from '../../lib/context';
+import { useLoading } from '../../lib/context/app.context';
 
 interface FormModel {
     title: string;

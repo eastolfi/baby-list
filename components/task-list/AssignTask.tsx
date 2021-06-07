@@ -6,7 +6,7 @@ import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
-import { useLoading } from '../../lib/context';
+import { useLoading } from '../../lib/context/app.context';
 interface AssignTaskProps {
     task: Task;
     className?: string;
