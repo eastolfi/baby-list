@@ -15,6 +15,7 @@ import { useLoading } from '../../lib/context/app.context';
 import { AssignTask } from './AssignTask';
 import { DisplayTask } from './DisplayTask';
 import { EditTask } from './EditTask';
+import { useUser as useConnectedUser } from '../../lib/context/app.context';
 
 interface TaskItemProps {
     task: Task;
@@ -27,6 +28,7 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
     const { t } = useTranslation();
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
+    const { user: connectedUser } = useConnectedUser();
 
     const handleToggleTaskDone = () => {
         showLoading();
@@ -59,8 +61,7 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
     }
 
     const { user } = useUser();
-    // Change to context
-    const canToggleDone = user?.isAdmin === true;
+    const canToggleDone = connectedUser?.isAdmin === true;
     const canModify = (!task.done && task.createdBy && user) ? task.createdBy?.email === user?.email : false;
     const canAssign = canModify || task.available;
 

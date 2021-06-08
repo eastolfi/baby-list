@@ -9,6 +9,7 @@ import { TaskList } from '../../components/task-list/TaskList';
 import { CallbackData, Task } from '../../models';
 import useTaskService from '../../lib/services/task.service';
 import { useLoading } from '../../lib/context/app.context';
+import { useUser as useConnectedUser } from '../../lib/context/app.context';
 
 export const getServerSideProps = withPageAuthRequired();
 
@@ -16,6 +17,7 @@ export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
+    const { fetchUser } = useConnectedUser();
 
     const searchTasks = () => {
         showLoading();
@@ -32,6 +34,10 @@ export default function TaskListPage() {
     
     useEffect(() => {
         searchTasks();
+    }, []);
+
+    useEffect(() => {
+        fetchUser();
     }, []);
 
     const refreshTasksIfSuccess = (error: Error | null, data?: CallbackData) => {
