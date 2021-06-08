@@ -17,7 +17,7 @@ export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
-    const { fetchUser } = useConnectedUser();
+    const { fetchUser, user: connectedUser } = useConnectedUser();
 
     const searchTasks = () => {
         showLoading();
@@ -52,10 +52,12 @@ export default function TaskListPage() {
         }
     }
 
+    const canAddTask = connectedUser?.isAdmin === true;
+
     return (
         <Layout>
             <div className="flex flex-col items-center">
-                <AddTask onItemAdd={ refreshTasksIfSuccess } />
+                {canAddTask && <AddTask onItemAdd={ refreshTasksIfSuccess } />}
 
                 <Divider className="w-full" variant="middle" />
 

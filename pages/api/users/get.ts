@@ -1,20 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import { Task, User } from '@prisma/client'
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
+import { User } from '@prisma/client'
 
 import prisma from '../../../lib/prisma';
 
 export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
     const { email } = JSON.parse(req.body) as {email: string};
-    // const session = getSession(req, res);
+
     try {
-        // if (!session?.user) {
-        //     res.status(404).json({ message: 'No user to assign found' });
-        //     return;
-        // }
-        
-        // const { name, nickname, email } = session.user;
-        
         const user: User | null = await prisma.user.findUnique({
             where: {
                 email
