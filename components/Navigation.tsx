@@ -7,7 +7,6 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone';
 import AssignmentTwoToneIcon from '@material-ui/icons/AssignmentTwoTone';
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
-import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone';
 import LoopTwoToneIcon from '@material-ui/icons/LoopTwoTone';
 
@@ -48,10 +47,9 @@ export default function Navigation(_props: NavigationProps) {
     }
 
     return (
-        <BottomNavigation value={value} onChange={handleChange} className={navigationClasses}>
+        <BottomNavigation value={value} showLabels={true} onChange={handleChange} className={navigationClasses}>
             <BottomNavigationAction label="Inicio" value="/" icon={<HomeTwoToneIcon />} />
             <BottomNavigationAction label="Tareas" value="/task-list" icon={<AssignmentTwoToneIcon />} />
-            <BottomNavigationAction label="Cuenta" value="/profile" icon={<AccountCircleTwoToneIcon />} />
             <BottomNavigationAction label="Desconectarse" value="/api/auth/logout" icon={<MeetingRoomTwoToneIcon />} />
         </BottomNavigation>
     )
