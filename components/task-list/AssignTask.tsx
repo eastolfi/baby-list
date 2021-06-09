@@ -19,13 +19,13 @@ export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps)
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
 
-    const handleAssignTask = () => {
+    const handleAssignTask = (unassign: boolean = false) => {
         const message = task.available ? t('tasks.actions.assign.confirm') : t('tasks.actions.unassign.confirm');
 
         if (confirm(message)) {
             showLoading();
 
-            taskService.assignTask(task)
+            taskService.assignTask(task, unassign)
             .then((assigned: string) => {
                 hideLoading();
                 onTaskAssigned && onTaskAssigned(null, { assigned });
@@ -39,12 +39,12 @@ export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps)
     return (
         <div className={className}>
             {task.available && (
-            <IconButton aria-label={t('tasks.actions.assign.title')} color="primary" onClick={handleAssignTask}>
+            <IconButton aria-label={t('tasks.actions.assign.title')} color="primary" onClick={() => handleAssignTask()}>
                 <AlternateEmailIcon />
             </IconButton>)}
 
             {!task.available && (
-            <IconButton aria-label={t('tasks.actions.unassign.title')} color="primary" onClick={handleAssignTask}>
+            <IconButton aria-label={t('tasks.actions.unassign.title')} color="primary" onClick={() => handleAssignTask(true)}>
                 <Badge color="secondary" badgeContent="X">
                     <AlternateEmailIcon />
                 </Badge>
