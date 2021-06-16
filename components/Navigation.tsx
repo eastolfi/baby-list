@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@auth0/nextjs-auth0';
+import { useTranslation } from 'react-i18next';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -14,6 +15,7 @@ interface NavigationProps {
 }
 
 export default function Navigation(_props: NavigationProps) {
+    const { t } = useTranslation();
     const router = useRouter();
     const { user, isLoading } = useUser();
     
@@ -33,7 +35,7 @@ export default function Navigation(_props: NavigationProps) {
         // Change to loading layout
         return (
             <BottomNavigation className={navigationClasses}>
-                <BottomNavigationAction label="Cargando..." value="" icon={<LoopTwoToneIcon />} />
+                <BottomNavigationAction label={t('global.common.loading')} value="" icon={<LoopTwoToneIcon />} />
             </BottomNavigation>
         )
     }
@@ -41,16 +43,16 @@ export default function Navigation(_props: NavigationProps) {
     if (!user) {
         return (
             <BottomNavigation showLabels value={value} onChange={handleChange} className={navigationClasses}>
-                <BottomNavigationAction label="Conectarse" value="/api/auth/login" icon={<PersonAddTwoToneIcon />} />
+                <BottomNavigationAction label={t('global.routing.sign-in')} value="/api/auth/login" icon={<PersonAddTwoToneIcon />} />
             </BottomNavigation>
         )
     }
 
     return (
         <BottomNavigation value={value} showLabels={true} onChange={handleChange} className={navigationClasses}>
-            <BottomNavigationAction label="Inicio" value="/" icon={<HomeTwoToneIcon />} />
-            <BottomNavigationAction label="Tareas" value="/task-list" icon={<AssignmentTwoToneIcon />} />
-            <BottomNavigationAction label="Desconectarse" value="/api/auth/logout" icon={<MeetingRoomTwoToneIcon />} />
+            <BottomNavigationAction label={t('global.routing.home')} value="/" icon={<HomeTwoToneIcon />} />
+            <BottomNavigationAction label={t('global.routing.tasks')} value="/task-list" icon={<AssignmentTwoToneIcon />} />
+            <BottomNavigationAction label={t('global.routing.sign-out')} value="/api/auth/logout" icon={<MeetingRoomTwoToneIcon />} />
         </BottomNavigation>
     )
 }

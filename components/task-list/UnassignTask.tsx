@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
-import { useTranslation } from 'react-i18next';
 
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 

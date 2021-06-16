@@ -1,15 +1,25 @@
 {
     "global": {
+        "common": {
+            "loading": "En cours..."
+        },
         "buttons": {
             "cancel": "Annuler",
             "confirm": "Confirmer",
             "more": "Plus"
+        },
+        "routing": {
+            "sign-up": "Créer compte",
+            "sign-in": "Identifiez-vous",
+            "sign-out": "Déconnexion",
+            "home": "Accueil",
+            "tasks": "Tâches"
         }
     },
     "home": {
         "greeting": {
-            "connected": "Utilize la barra de navegación infererior para acceder a las distintas funcionalidades",
-            "not-connected": "Por favor, inicie sesión para acceder a las funcionalidades"
+            "connected": "Utilisez la barre de navigation inférieure pour accéder aux différentes fonctionnalités",
+            "not-connected": "S'il vous plaît, identifiez-vous pour accéder aux fonctionnalités"
         }
     },
     "tasks": {
@@ -20,12 +30,11 @@
             "complete": "Fermer tâche",
             "uncomplete": "Reouvrir tâche",
             "assign": {
-                "title": "Affecter tâche",
-                "confirm": "¿Quieres asignarte a esta tâche? Si no has creado esta tâche, no podrás desasignarte después."
+                "title": "Affecter tâche"
             },
             "unassign": {
                 "title": "Désaffecter tâche",
-                "confirm": "¿Quieres deasignarte de esta tâche?"
+                "confirm": "Veux-tu te désaffecter cette tâche?"
             }
         },
         "title": {

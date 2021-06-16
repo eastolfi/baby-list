@@ -1,9 +1,19 @@
 {
     "global": {
+        "common": {
+            "loading": "Cargando..."
+        },
         "buttons": {
             "cancel": "Cancelar",
             "confirm": "Confirmar",
             "more": "Más"
+        },
+        "routing": {
+            "sign-up": "Crear cuenta",
+            "sign-in": "Iniciar sesión",
+            "sign-out": "Desconectarse",
+            "home": "Inicio",
+            "tasks": "Tareas"
         }
     },
     "home": {
