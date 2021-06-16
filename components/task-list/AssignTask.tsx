@@ -7,6 +7,8 @@ import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
 import { useLoading } from '../../lib/context/app.context';
+import { ConfirmModal } from '../../components/dialogs/ConfirmDialog';
+import { useState } from 'react';
 interface AssignTaskProps {
     task: Task;
     className?: string;
@@ -18,37 +20,48 @@ export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps)
 
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
+    const [ open, setOpen ] = useState(false);
 
-    const handleAssignTask = (unassign: boolean = false) => {
-        const message = task.available ? t('tasks.actions.assign.confirm') : t('tasks.actions.unassign.confirm');
-
-        if (confirm(message)) {
-            showLoading();
-
-            taskService.assignTask(task, unassign)
-            .then((assigned: string) => {
-                hideLoading();
-                onTaskAssigned && onTaskAssigned(null, { assigned });
-            }).catch(error => {
-                hideLoading();
-                onTaskAssigned && onTaskAssigned(error);
-            });
+    const handleConfirmClose = (result?: boolean) => {
+        setOpen(false);
+        
+        if (result) {
+            assignTask();
         }
     };
 
-    return (
-        <div className={className}>
-            {task.available && (
-            <IconButton aria-label={t('tasks.actions.assign.title')} color="primary" onClick={() => handleAssignTask()}>
-                <AlternateEmailIcon />
-            </IconButton>)}
+    const assignTask = () => {
+        showLoading();
 
-            {!task.available && (
-            <IconButton aria-label={t('tasks.actions.unassign.title')} color="primary" onClick={() => handleAssignTask(true)}>
-                <Badge color="secondary" badgeContent="X">
-                    <AlternateEmailIcon />
-                </Badge>
-            </IconButton>)}
-        </div>
+        taskService.assignTask(task, !task.available)
+        .then((assigned: string) => {
+            hideLoading();
+            onTaskAssigned && onTaskAssigned(null, { assigned });
+        }).catch(error => {
+            hideLoading();
+            onTaskAssigned && onTaskAssigned(error);
+        });
+    };
+
+    const title = task.available ? t('tasks.actions.assign.title') : t('tasks.actions.unassign.title');
+    const modalBody = task.available ? t('tasks.actions.assign.confirm') : t('tasks.actions.unassign.confirm');
+    return (
+        <>
+            <ConfirmModal title={title} body={modalBody} open={open} onClose={handleConfirmClose} />
+
+            <div className={className}>
+                {task.available && (
+                    <IconButton aria-label={title} color="primary" onClick={() => setOpen(true)}>
+                        <AlternateEmailIcon />
+                    </IconButton>)}
+
+                {!task.available && (
+                    <IconButton aria-label={title} color="primary" onClick={() => setOpen(true)}>
+                    <Badge color="secondary" badgeContent="X">
+                        <AlternateEmailIcon />
+                    </Badge>
+                </IconButton>)}
+            </div>
+        </>
     )
 }
