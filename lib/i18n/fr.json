@@ -18,8 +18,8 @@
     },
     "home": {
         "greeting": {
-            "connected": "Utilisez la barre de navigation inférieure pour accéder aux différentes fonctionnalités",
-            "not-connected": "S'il vous plaît, identifiez-vous pour accéder aux fonctionnalités"
+            "common": "Utilisez la barre de navigation inférieure pour accéder aux différentes fonctionnalités",
+            "not-connected": "S'il vous plaît, identifiez-vous pour pouvoir créer des tâches"
         }
     },
     "tasks": {

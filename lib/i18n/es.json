@@ -18,8 +18,8 @@
     },
     "home": {
         "greeting": {
-            "connected": "Utilize la barra de navegación infererior para acceder a las distintas funcionalidades",
-            "not-connected": "Por favor, inicie sesión para acceder a las funcionalidades"
+            "common": "Utilize la barra de navegación infererior para acceder a las distintas funcionalidades",
+            "not-connected": "Para crear tareas, por favor, inicie sesión"
         }
     },
     "tasks": {

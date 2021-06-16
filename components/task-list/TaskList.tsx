@@ -2,7 +2,7 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 
 import { ServiceCallback, Task } from '../../models';
-import { useUser as useConnectedUser } from '../../lib/context/app.context';
+import { useConnectedUser } from '../../lib/context/app.context';
 
 import { TaskItem } from './TaskItem';
 
@@ -14,7 +14,7 @@ interface TaskListElementsProps {
 }
 
 export function TaskList({ elements, onTaskDone, onItemEdited, onTaskAssigned }: TaskListElementsProps) {
-    const { user: connectedUser } = useConnectedUser();
+    const { connectedUser } = useConnectedUser();
 
     const filteredElements: Array<Task | string> = [
         ...elements.filter(e => !e.done),

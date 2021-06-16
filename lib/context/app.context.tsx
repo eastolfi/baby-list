@@ -7,7 +7,7 @@ import { useUserContext, UserState, defaultState as defaultUserState } from './u
 type State = {
     loader: LoaderState,
     locale: LocaleState,
-    user: UserState,
+    connectedUser: UserState,
 };
 
 const AppContext = createContext<State>({
@@ -15,7 +15,7 @@ const AppContext = createContext<State>({
         ...defaultLoaderState
     }, locale: {
         ...defaultLocaleState
-    }, user: {
+    }, connectedUser: {
         ...defaultUserState
     }
 });
@@ -32,7 +32,7 @@ function AppProvider({ children }: AppProviderProps) {
             ...LoaderState
         }, locale: {
             ...LocaleState
-        }, user: {
+        }, connectedUser: {
             ...UserState
         }
     };
@@ -54,13 +54,13 @@ function useLocale(): LocaleState {
     return useContext(AppContext).locale;
 }
 
-function useUser(): UserState {
-    return useContext(AppContext).user;
+function useConnectedUser(): UserState {
+    return useContext(AppContext).connectedUser;
 }
 
 export {
     AppProvider,
     useLoading,
     useLocale,
-    useUser,
+    useConnectedUser,
 }

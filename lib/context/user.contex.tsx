@@ -1,13 +1,21 @@
+import { useUser } from '@auth0/nextjs-auth0';
 import { useState } from 'react';
+
 import useUserService from '../../lib/services/user.service';
 import { User } from '../../models';
 
 export type UserState = {
-    user: User | null;
+    connectedUser: User | null;
+    hasUser: boolean;
+    email: string;
+    isAdmin: boolean;
     fetchUser: () => void;
 }
 export const defaultState: UserState = {
-    user: null,
+    connectedUser: null,
+    hasUser: false,
+    email: '',
+    isAdmin: false,
     fetchUser: () => undefined
 }
 
@@ -16,13 +24,19 @@ type UserContext = {
 }
 
 export function useUserContext(): UserContext {
+    const { user: sessionUser } = useUser();
     const { getUser } = useUserService()
     const [ user, setUser ] = useState((null as unknown) as User);
 
     const state: UserState = {
-        user,
+        connectedUser: user,
+        hasUser: !!user,
+        email: user?.email || '',
+        isAdmin: !!(user?.isAdmin),
         fetchUser: () => {
-            getUser('eastolfi91@gmail.com').then(setUser).catch(console.error);
+            if (sessionUser?.email) {
+                getUser(sessionUser.email).then(setUser).catch(console.error);
+            }
         }
     };
 

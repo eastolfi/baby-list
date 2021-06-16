@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 import Divider from '@material-ui/core/Divider';
 
@@ -9,15 +8,13 @@ import { TaskList } from '../../components/task-list/TaskList';
 import { CallbackData, Task } from '../../models';
 import useTaskService from '../../lib/services/task.service';
 import { useLoading } from '../../lib/context/app.context';
-import { useUser as useConnectedUser } from '../../lib/context/app.context';
-
-export const getServerSideProps = withPageAuthRequired();
+import { useConnectedUser } from '../../lib/context/app.context';
 
 export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
-    const { fetchUser, user: connectedUser } = useConnectedUser();
+    const { fetchUser, connectedUser } = useConnectedUser();
 
     const searchTasks = () => {
         showLoading();

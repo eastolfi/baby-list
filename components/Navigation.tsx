@@ -43,6 +43,8 @@ export default function Navigation(_props: NavigationProps) {
     if (!user) {
         return (
             <BottomNavigation showLabels value={value} onChange={handleChange} className={navigationClasses}>
+                <BottomNavigationAction label={t('global.routing.home')} value="/" icon={<HomeTwoToneIcon />} />
+                <BottomNavigationAction label={t('global.routing.tasks')} value="/task-list" icon={<AssignmentTwoToneIcon />} />
                 <BottomNavigationAction label={t('global.routing.sign-in')} value="/api/auth/login" icon={<PersonAddTwoToneIcon />} />
             </BottomNavigation>
         )

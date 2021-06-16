@@ -16,7 +16,7 @@ import { AssignTask } from './AssignTask';
 import { UnassignTask } from './UnassignTask';
 import { DisplayTask } from './DisplayTask';
 import { EditTask } from './EditTask';
-import { useUser as useConnectedUser } from '../../lib/context/app.context';
+import { useConnectedUser } from '../../lib/context/app.context';
 
 interface TaskItemProps {
     task: Task;
@@ -29,7 +29,8 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
     const { t } = useTranslation();
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
-    const { user: connectedUser } = useConnectedUser();
+    const { user } = useUser();
+    const { isAdmin } = useConnectedUser();
 
     const handleToggleTaskDone = () => {
         showLoading();
@@ -61,10 +62,12 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
         }
     }
 
-    const { user } = useUser();
-    const canToggleDone = connectedUser?.isAdmin === true;
-    const canModify = (!task.done && task.createdBy && user) ? task.createdBy?.email === user?.email : false;
-    const canAssign = canModify || task.available;
+    
+    const canToggleDone = isAdmin;
+    const isCreator = (task.createdBy && user) && task.createdBy?.email === user?.email;
+    const canModify = isAdmin || isCreator;
+    const canAssign = task.available;
+    const canUnassign = !task.available && canModify;
 
     return (
         <ListItem>
@@ -80,9 +83,11 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
                 <OpenInNewIcon />
             </a>}
 
-            {canAssign && (
-                task.available ? <AssignTask task={task} onTaskAssigned={onTaskAssigned} /> : <UnassignTask task={task} onTaskAssigned={onTaskAssigned} />
-            )}
+            {canAssign &&
+            <AssignTask task={task} onTaskAssigned={onTaskAssigned} />}
+
+            {canUnassign &&
+            <UnassignTask task={task} onTaskAssigned={onTaskAssigned} />}
 
             {canModify && <EditTask className="ml-auto" item={task} onItemEdited={onItemEdited} />}
         </ListItem>
