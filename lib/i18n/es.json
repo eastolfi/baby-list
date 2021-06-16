@@ -20,8 +20,7 @@
             "complete": "Completar tarea",
             "uncomplete": "Reabrir tarea",
             "assign": {
-                "title": "Asignar tarea",
-                "confirm": "¿Quieres asignarte a esta tarea? Si no has creado esta tarea, no podrás desasignarte después."
+                "title": "Asignar tarea"
             },
             "unassign": {
                 "title": "Desasignar tarea",

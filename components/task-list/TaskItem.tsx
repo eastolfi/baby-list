@@ -13,6 +13,7 @@ import { ServiceCallback, Task } from '../../models';
 import { useLoading } from '../../lib/context/app.context';
 
 import { AssignTask } from './AssignTask';
+import { UnassignTask } from './UnassignTask';
 import { DisplayTask } from './DisplayTask';
 import { EditTask } from './EditTask';
 import { useUser as useConnectedUser } from '../../lib/context/app.context';
@@ -79,7 +80,9 @@ export function TaskItem({ task, onTaskDone, onItemEdited, onTaskAssigned }: Tas
                 <OpenInNewIcon />
             </a>}
 
-            {canAssign && <AssignTask task={task} onTaskAssigned={onTaskAssigned} />}
+            {canAssign && (
+                task.available ? <AssignTask task={task} onTaskAssigned={onTaskAssigned} /> : <UnassignTask task={task} onTaskAssigned={onTaskAssigned} />
+            )}
 
             {canModify && <EditTask className="ml-auto" item={task} onItemEdited={onItemEdited} />}
         </ListItem>

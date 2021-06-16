@@ -5,7 +5,7 @@ import { Task } from '@prisma/client'
 import prisma from '../../../lib/prisma';
 
 export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
-    const { taskId, unassign } = JSON.parse(req.body) as {taskId: string, unassign?: boolean};
+    const { taskId, unassign, assigned } = JSON.parse(req.body) as {taskId: string, unassign?: boolean, assigned?: string};
     const session = getSession(req, res);
     try {
         if (!session?.user) {
@@ -14,7 +14,7 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
         }
         
         const { name, nickname, email } = session.user;
-        const assignedTo = unassign ? null : name || nickname || email;
+        const assignedTo = unassign ? null : assigned || name || nickname || email;
 
         const updatedTask: Task = await prisma.task.update({
             where: { id: taskId },

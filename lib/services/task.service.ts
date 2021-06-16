@@ -25,8 +25,15 @@ export class TaskService {
         return fetcher('/api/tasks/edit', { method: 'POST', body: JSON.stringify({ task }) });
     }
 
-    public assignTask(task: Task, unassign: boolean = false): Promise<string> {
-        return fetcher('/api/tasks/assign', { method: 'POST', body: JSON.stringify({ taskId: task.id, unassign }) })
+    public assignTask(task: Task, unassign: boolean = false, assigned?: string): Promise<string> {
+        return fetcher('/api/tasks/assign', {
+            method: 'POST',
+            body: JSON.stringify({
+                taskId: task.id,
+                unassign,
+                assigned
+            })
+        })
             .then(({ assigned }: { assigned: string }) => assigned);
     }
 }

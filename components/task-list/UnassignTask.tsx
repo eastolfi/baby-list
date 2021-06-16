@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
 
+import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +9,7 @@ import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
 import { useLoading } from '../../lib/context/app.context';
-import { PromptModal } from '../../components/dialogs/PromptDialog';
+import { ConfirmModal } from '../../components/dialogs/ConfirmDialog';
 
 interface AssignTaskProps {
     task: Task;
@@ -17,27 +17,25 @@ interface AssignTaskProps {
     onTaskAssigned?: ServiceCallback;
 }
 
-export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps) {
+export function UnassignTask({ task, className, onTaskAssigned }: AssignTaskProps) {
     const { t } = useTranslation();
 
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
     const [ open, setOpen ] = useState(false);
-    const { user } = useUser();
-    const assignedTo = user?.name || user?.nickname || user?.email || '';
 
-    const handlePromptClose = (result?: string) => {
+    const handleConfirmClose = (result?: boolean) => {
         setOpen(false);
 
         if (result) {
-            assignTask(result);
+            assignTask();
         }
     };
 
-    const assignTask = (assigned: string) => {
+    const assignTask = () => {
         showLoading();
 
-        taskService.assignTask(task, !task.available, assigned)
+        taskService.assignTask(task, true)
         .then((assigned: string) => {
             hideLoading();
             onTaskAssigned && onTaskAssigned(null, { assigned });
@@ -49,13 +47,14 @@ export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps)
 
     return (
         <>
-            <PromptModal open={open} title={t('tasks.actions.unassign.title')} initialState={assignedTo} label='Assign' onClose={handlePromptClose} />
+            <ConfirmModal open={open} title={t('tasks.actions.unassign.title')} body={t('tasks.actions.unassign.confirm')} onClose={handleConfirmClose} />
 
             <div className={className}>
-                <IconButton aria-label={t('tasks.actions.assign.title')} color="primary" onClick={() => setOpen(true)}>
-                    <AlternateEmailIcon />
+                <IconButton aria-label={t('tasks.actions.unassign.title')} color="primary" onClick={() => setOpen(true)}>
+                    <Badge color="secondary" badgeContent="X">
+                        <AlternateEmailIcon />
+                    </Badge>
                 </IconButton>
             </div>
-        </>
-    )
+        </>)
 }
