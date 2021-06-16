@@ -1,16 +1,10 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { AbstractControl, FieldControl, FieldGroup, FormBuilder, Validators } from 'react-reactive-form';
 import { useTranslation } from 'react-i18next';
 
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -26,54 +20,15 @@ import useTaskService from '../../lib/services/task.service';
 import { TextInput } from '../TextInput';
 import { Task, ServiceCallback } from '../../models';
 import { useLoading } from '../../lib/context/app.context';
+import { PromptModal } from '../../components/dialogs/PromptDialog';
+
+const SAFE_TICK_ICON = '✓';
 
 interface FormModel {
     title: string;
     // link?: string;
     // picture?: string;
     assigned?: string;
-}
-
-function PromptComponent({ open, title, label, initial, onClose }: { open: boolean, title: string, label: string, initial: string, onClose: (value?: string) => void }) {
-    const { t } = useTranslation();
-    const [ value, setValue ] = useState('');
-
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setValue(event.target.value);
-    };
-
-    const handleClose = (value?: string) => {
-        onClose(value);
-    }
-
-    return (
-        <Dialog open={open} onClose={() => handleClose()} maxWidth="sm" fullWidth={true}>
-            <DialogTitle>{ title }</DialogTitle>
-
-            <DialogContent>
-                <div className="w-full">
-                    <TextField
-                        type="text"
-                        className="w-full"
-                        label={label}
-                        variant="outlined"
-                        required={true}
-                        autoFocus
-                        defaultValue={initial}
-                        onChange={handleChange} />
-                </div>
-            </DialogContent>
-
-            <DialogActions>
-                <Button onClick={() => handleClose()} color="secondary">
-                    { t('global.buttons.cancel') }
-                </Button>
-                <Button onClick={() => handleClose(value.trim())} color="primary">
-                    { t('global.buttons.confirm') }
-                </Button>
-            </DialogActions>
-        </Dialog>
-    )
 }
 
 interface AddTaskProps {
@@ -189,11 +144,11 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
 
     return (
         <>
-            <PromptComponent
+            <PromptModal
                 open={dialogOpen}
                 title={dialogTitle}
                 label={dialogLabel}
-                initial={dialogOpener === 'LINK' ? link : picture}
+                initialState={dialogOpener === 'LINK' ? link : picture}
                 onClose={handleDialogClosed} />
 
             <FieldGroup
@@ -209,7 +164,7 @@ export function AddTask({ item, onItemAdd, editTask }: AddTaskProps) {
                             <IconButton aria-label="add link" color="secondary" onClick={handleAddLink}>
                                 {!link && <LinkIcon fontSize="large" />}
 
-                                {link && (<Badge color="primary" badgeContent="🗸">
+                                {link && (<Badge color="primary" badgeContent={SAFE_TICK_ICON}>
                                     <LinkIcon fontSize="large" />
                                 </Badge>)}
                             </IconButton>

@@ -3,34 +3,41 @@ import { useTranslation } from 'react-i18next';
 
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
 
 import useTaskService from '../../lib/services/task.service';
 import { ServiceCallback, Task } from '../../models';
 import { useLoading } from '../../lib/context/app.context';
+import { AppDialog, RenderFunctionParams } from '../dialogs/AppDialog';
 
 import { AddTask } from './AddTask';
 
-function EditModal({ open, item, onClose }: { open: boolean, item: Task, onClose: (updatedItem?: Task) => void }) {
+type EditDialogProps = {
+    open: boolean;
+    initialTask: Task;
+    onClose: (updatedItem?: Task) => void;
+};
+function EditDialog({ open, initialTask, onClose }: EditDialogProps) {
     const { t } = useTranslation();
     
-    const handleClose = () => {
-        onClose();
+    const handleTaskEdit = (task: Task, closeDialog: (result?: Task) => void) => {
+        closeDialog(task);
     }
 
-    const handleTaskEdit = (task: Task) => {
-        onClose(task);
+    const handleDialogClose = (result?: Task) => {
+        onClose(result);
     }
 
     return (
-        <Dialog onClose={handleClose} aria-labelledby={t('tasks.actions.edit')} open={open}>
-            <DialogTitle id="editTaskTitle">{t('tasks.actions.edit')}</DialogTitle>
-
+        <AppDialog
+            open={open}
+            title={t('tasks.actions.edit')}
+            onClose={handleDialogClose}
+            render={({ closeDialog }: RenderFunctionParams<Task>) => (
+            
             <div className="p-2">
-                <AddTask item={item} editTask={handleTaskEdit} />
+                <AddTask item={initialTask} editTask={(task: Task) => handleTaskEdit(task, closeDialog)} />
             </div>
-        </Dialog>
+        )} />
     )
 }
 
@@ -76,7 +83,7 @@ export function EditTask({ item, className, onItemEdited }: EditTaskProps) {
                 </IconButton>
             </div>
             
-            <EditModal open={open} item={item} onClose={handleModalClose} />
+            <EditDialog open={open} initialTask={item} onClose={handleModalClose} />
         </>
     )
 }
