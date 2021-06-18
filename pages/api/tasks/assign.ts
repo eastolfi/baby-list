@@ -1,19 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
+import { getSession } from '@auth0/nextjs-auth0';
 import { Task } from '@prisma/client'
 
 import prisma from '../../../lib/prisma';
 
-export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { taskId, unassign, assigned } = JSON.parse(req.body) as {taskId: string, unassign?: boolean, assigned?: string};
     const session = getSession(req, res);
     try {
-        if (!session?.user) {
+        if (!assigned && !session?.user) {
             res.status(404).json({ message: 'No user to assign found' });
             return;
         }
         
-        const { name, nickname, email } = session.user;
+        const { name, nickname, email } = session?.user || {};
         const assignedTo = unassign ? null : assigned || name || nickname || email;
 
         const updatedTask: Task = await prisma.task.update({
@@ -38,4 +38,4 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
             res.status(500).json({ message: error.message })
         }
     }
-});
+};

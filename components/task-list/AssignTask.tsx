@@ -49,7 +49,13 @@ export function AssignTask({ task, className, onTaskAssigned }: AssignTaskProps)
 
     return (
         <>
-            <PromptModal open={open} title={t('tasks.actions.unassign.title')} initialState={assignedTo} label='Assign' onClose={handlePromptClose} />
+            <PromptModal
+                open={open}
+                title={t('tasks.actions.assign.title')}
+                initialState={assignedTo}
+                label={t('tasks.assigned.label')}
+                message={t('tasks.actions.assign.warning')}
+                onClose={handlePromptClose} />
 
             <div className={className}>
                 <IconButton aria-label={t('tasks.actions.assign.title')} color="primary" onClick={() => setOpen(true)}>

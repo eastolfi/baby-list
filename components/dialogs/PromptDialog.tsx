@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 import { AppDialog, RenderFunctionParams } from './AppDialog';
 import { ChangeEvent, useState } from 'react';
@@ -13,10 +14,11 @@ type PromptModalProps = {
     title: string;
     label: string;
     initialState: string;
+    message?: string;
     onClose: (result?: string) => void;
 }
 
-export function PromptModal({ open, title, label, initialState, onClose }: PromptModalProps) {
+export function PromptModal({ open, title, label, initialState, message, onClose }: PromptModalProps) {
     const { t } = useTranslation();
     const [ value, setValue ] = useState('');
 
@@ -42,6 +44,9 @@ export function PromptModal({ open, title, label, initialState, onClose }: Promp
             render={({ closeDialog }: RenderFunctionParams<string>) => (
             <>
                 <DialogContent>
+                    {message?.trim() &&
+                    <Typography className='mb-3' variant='body2' component='p'>{ message }</Typography>}
+
                     <div className='w-full'>
                         <TextField
                             type='text'

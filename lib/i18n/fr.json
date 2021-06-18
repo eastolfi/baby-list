@@ -30,7 +30,8 @@
             "complete": "Fermer tâche",
             "uncomplete": "Reouvrir tâche",
             "assign": {
-                "title": "Affecter tâche"
+                "title": "Affecter tâche",
+                "warning": "Attention, si vous êtes pas connecté, vous pourrez pas vous désaffecter."
             },
             "unassign": {
                 "title": "Désaffecter tâche",

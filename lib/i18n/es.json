@@ -30,7 +30,8 @@
             "complete": "Completar tarea",
             "uncomplete": "Reabrir tarea",
             "assign": {
-                "title": "Asignar tarea"
+                "title": "Asignar tarea",
+                "warning": "Atención, si no has iniciado sesión, no podrás desasignarte."
             },
             "unassign": {
                 "title": "Desasignar tarea",

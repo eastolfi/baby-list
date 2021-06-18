@@ -25,7 +25,7 @@ export function TaskList({ elements, onTaskDone, onItemEdited, onTaskAssigned }:
     const maxHeight = connectedUser?.isAdmin === true ? 'max-h-2/4-screen' : 'max-h-3/4-screen';
 
     return (
-        <List component="ul" className={`w-full sm:w-10/12 md:w-8/12 overflow-y-auto overflow-x-hidden ${maxHeight}`}>
+        <List component="ul" className={`w-full pb-5 sm:w-10/12 md:w-8/12 overflow-y-auto overflow-x-hidden ${maxHeight}`}>
             {filteredElements.map((item: Task | string) => {
                 if (item === 'DIVIDER') return <Divider key='DIVIDER' className="w-full" variant="middle" />
 
