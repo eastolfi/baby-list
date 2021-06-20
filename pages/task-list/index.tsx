@@ -14,7 +14,7 @@ export default function TaskListPage() {
     const [ items, setItems ] = useState([] as Task[]);
     const taskService = useTaskService();
     const { showLoading, hideLoading } = useLoading();
-    const { fetchUser, connectedUser } = useConnectedUser();
+    const { connectedUser } = useConnectedUser();
 
     const searchTasks = () => {
         showLoading();
@@ -31,10 +31,6 @@ export default function TaskListPage() {
     
     useEffect(() => {
         searchTasks();
-    }, []);
-
-    useEffect(() => {
-        fetchUser();
     }, []);
 
     const refreshTasksIfSuccess = (error: Error | null, data?: CallbackData) => {
