@@ -13,7 +13,8 @@
             "sign-in": "Iniciar sesión",
             "sign-out": "Desconectarse",
             "home": "Inicio",
-            "tasks": "Tareas"
+            "tasks": "Tareas",
+            "daycare": "Guardería"
         }
     },
     "home": {

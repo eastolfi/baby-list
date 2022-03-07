@@ -10,6 +10,7 @@ import AssignmentTwoToneIcon from '@material-ui/icons/AssignmentTwoTone';
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone';
 import LoopTwoToneIcon from '@material-ui/icons/LoopTwoTone';
+import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone';
 
 interface NavigationProps {
 }
@@ -45,6 +46,7 @@ export default function Navigation(_props: NavigationProps) {
             <BottomNavigation showLabels value={value} onChange={handleChange} className={navigationClasses}>
                 <BottomNavigationAction label={t('global.routing.home')} value="/" icon={<HomeTwoToneIcon />} />
                 <BottomNavigationAction label={t('global.routing.tasks')} value="/task-list" icon={<AssignmentTwoToneIcon />} />
+                <BottomNavigationAction label={t('global.routing.daycare')} value="/daycare" icon={<ChildCareTwoToneIcon />} />
                 <BottomNavigationAction label={t('global.routing.sign-in')} value="/api/auth/login" icon={<PersonAddTwoToneIcon />} />
             </BottomNavigation>
         )
@@ -54,6 +56,7 @@ export default function Navigation(_props: NavigationProps) {
         <BottomNavigation value={value} showLabels={true} onChange={handleChange} className={navigationClasses}>
             <BottomNavigationAction label={t('global.routing.home')} value="/" icon={<HomeTwoToneIcon />} />
             <BottomNavigationAction label={t('global.routing.tasks')} value="/task-list" icon={<AssignmentTwoToneIcon />} />
+            <BottomNavigationAction label={t('global.routing.daycare')} value="/daycare" icon={<ChildCareTwoToneIcon />} />
             <BottomNavigationAction label={t('global.routing.sign-out')} value="/api/auth/logout" icon={<MeetingRoomTwoToneIcon />} />
         </BottomNavigation>
     )
