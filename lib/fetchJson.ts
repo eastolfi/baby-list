@@ -33,7 +33,7 @@ export async function fetcher(url: RequestInfo, options?: RequestInit) {
         // if the server replies, there's always some data in json
         // if there's a network error, it will throw at the previous line
         return await response.json();
-    } catch (error) {
+    } catch (error: any) {
         console.log('An error occured:');
         console.log(error)
         if (!error.data) {

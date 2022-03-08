@@ -1,97 +1,202 @@
 import { useEffect, useState } from 'react';
 
 import Divider from '@material-ui/core/Divider';
+import TextField from '@material-ui/core/TextField';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+// import {
+//     MuiPickersUtilsProvider,
+//     KeyboardTimePicker,
+//     KeyboardDatePicker,
+// } from '@material-ui/pickers';
 
 import Layout from '../../components/Layout';
-import { TextField } from '@material-ui/core';
 
-interface Data {
-    firstNap: string;
-    [key: string]: string;
+class DaycareData {
+    public static currentVersion = '0.0.1';
+
+    public version: string;
+    public firstNap: string;
+    public secondNap: string;
+    public firstMeal: string;
+    public secondMeal: string;
+    public ingredients: string;
+
+    constructor(data: { [key: string]: string; }) {
+        this.version = data['version'] || '';
+        this.firstNap = data['firstNap'] || '';
+        this.secondNap = data['secondNap'] || '';
+        this.firstMeal = data['firstMeal'] || '';
+        this.secondMeal = data['secondMeal'] || '';
+        this.ingredients = data['ingredients'] || '';
+
+        this.migrate();
+    }
+
+    public static load(): DaycareData {
+        const i: { [key: string]: string; } = JSON.parse(localStorage.getItem('today') || '{}');
+
+        return new DaycareData(i);
+    }
+
+    public static updateData(key: string, value: string): void {
+        const data = DaycareData.load();
+
+        (data as any)[key] = value;
+
+        data.save();
+    }
+
+    public migrate(): void {
+        const current = this.version;
+        const next = DaycareData.currentVersion;
+
+        if (this.shouldMigrate()) {
+            if (current === '') {
+                if (next === '0.0.1') {
+                    this.migrate000To001();
+                }
+            }
+
+            this.save();
+        }
+    }
+
+    public save(): void {
+        localStorage.setItem('today', JSON.stringify(this))
+    }
+
+    private shouldMigrate(): boolean {
+        return DaycareData.currentVersion !== this.version;
+    }
+
+    private migrate000To001(): void {
+        this.migrateVersion();
+    }
+
+    private migrateVersion(): void {
+        this.version = DaycareData.currentVersion;
+    }
 }
 
-export default function TaskListPage() {
+export default function DaycarePage() {
+    const [ currentDay, setCurrentDay ] = useState('2022-03-08');
     const [ firstNap, setFirstNap ] = useState('');
     const [ secondNap, setSecondNap ] = useState('');
     const [ firstMeal, setFirstMeal ] = useState('');
     const [ secondMeal, setSecondMeal ] = useState('');
     const [ ingredients, setIngredients ] = useState('');
+    
+    const ingredientsList = ['Pollo', 'Ternera', 'Pescado', 'Patatas', 'Zanahoria', 'Brocoli', 'Judías Verdes', 'Espinacas', 'Yogurt'];
+    const selectedIngredients = ingredients.split('\n');
 
     useEffect(() => {
-        const i: Data = JSON.parse(localStorage.getItem('today') || '{}');
+        const { version, firstNap, secondNap, firstMeal, secondMeal, ingredients } = DaycareData.load();
 
-        setFirstNap(i.firstNap || '');
-        setSecondNap(i.secondNap || '');
-        setFirstMeal(i.firstMeal || '');
-        setSecondMeal(i.secondMeal || '');
-        setIngredients(i.ingredients || '');
+        DaycareData.updateData('version', version)
+
+        setFirstNap(firstNap);
+        setSecondNap(secondNap);
+        setFirstMeal(firstMeal);
+        setSecondMeal(secondMeal);
+        setIngredients(ingredients);
     }, [])
 
     useEffect(() => {
-        updateData('firstNap', firstNap)
+        DaycareData.updateData('firstNap', firstNap)
     }, [ firstNap ])
     useEffect(() => {
-        updateData('secondNap', secondNap)
+        DaycareData.updateData('secondNap', secondNap)
     }, [ secondNap ])
     useEffect(() => {
-        updateData('firstMeal', firstMeal)
+        DaycareData.updateData('firstMeal', firstMeal)
     }, [ firstMeal ])
     useEffect(() => {
-        updateData('secondMeal', secondMeal)
+        DaycareData.updateData('secondMeal', secondMeal)
     }, [ secondMeal ])
     useEffect(() => {
-        updateData('ingredients', ingredients)
+        DaycareData.updateData('ingredients', ingredients)
     }, [ ingredients ])
 
-    const updateData = (key: string, value: string) => {
-        const i = JSON.parse(localStorage.getItem('today') || '{}');
-        i[key] = value;
-        localStorage.setItem('today', JSON.stringify(i))
+    const updateIngredients = (ingredient: string, added: boolean) => {
+        setIngredients((current: string) => {
+            const values = current.split('\n');
+
+            if (added) {
+                values.push(ingredient);
+            } else {
+                const position = values.indexOf(ingredient);
+                values.splice(position, 1);
+            }
+
+            return values.join('\n');
+        })
     }
 
     return (
         <Layout>
             <div className="flex flex-col items-center">
-                <TextField
-                    id="outlined-basic"
-                    label="Siesta 1"
-                    variant="outlined"
-                    type='time'
-                    value={ firstNap }
-                    onChange={ event => setFirstNap(event.target.value) } />
+                <div className="flex flex-row flex-wrap justify-center w-full gap-3">
+                    <div className="w-1/4">
+                        <TextField
+                            id="currentDay"
+                            label="Día"
+                            variant="outlined"
+                            className='w-full'
+                            type='date'
+                            value={ currentDay }
+                            onChange={ event => setCurrentDay(event.target.value) } />
+                    </div>
+
+                    <Divider className="w-full my-5" variant="middle" />
+                </div>
+
+                <div className="flex flex-row w-full gap-3">
+                    <div className="w-1/2">
+                        <TextField
+                            id="firstNap"
+                            label="Siesta 1"
+                            variant="outlined"
+                            className='w-full'
+                            type='time'
+                            value={ firstNap }
+                            onChange={ event => setFirstNap(event.target.value) } />
+                    </div>
+
+                    <div className="w-1/2">
+                        <TextField
+                            id="secondNap"
+                            label="Siesta 2"
+                            variant="outlined"
+                            className='w-full'
+                            type='time'
+                            value={ secondNap }
+                            onChange={ event => setSecondNap(event.target.value) } />
+                    </div>
+                </div>
                 
-                <TextField
-                    id="outlined-basic3"
-                    label="Siesta 2"
-                    variant="outlined"
-                    type='time'
-                    value={ secondNap }
-                    onChange={ event => setSecondNap(event.target.value) } />
-                    
-                <TextField
-                    id="outlined-basic2"
-                    label="Comida 1"
-                    variant="outlined"
-                    type='time'
-                    value={ firstMeal }
-                    onChange={ event => setFirstMeal(event.target.value) } />
+                <div className="flex flex-row w-full gap-3">
+                    <div className="w-1/2">
+                        <TextField
+                            id="firstMeal"
+                            label="Comida 1"
+                            variant="outlined"
+                            className='w-full'
+                            type='time'
+                            value={ firstMeal }
+                            onChange={ event => setFirstMeal(event.target.value) } />
+                    </div>
 
-                <TextField
-                    id="outlined-basic4"
-                    label="Comida 2"
-                    variant="outlined"
-                    type='time'
-                    value={ secondMeal }
-                    onChange={ event => setSecondMeal(event.target.value) } />
-
-                <TextField
-                        id="outlined-multiline-static"
-                        label="Alimentos"
-                        multiline
-                        rows={4}
-                        defaultValue="Pollo Patatas Zanahoria"
-                        value={ ingredients }
-                        onChange={ event => setIngredients(event.target.value) } />
+                    <div className="w-1/2">
+                        <TextField
+                            id="secondMeal"
+                            label="Comida 2"
+                            variant="outlined"
+                            className='w-full'
+                            type='time'
+                            value={ secondMeal }
+                            onChange={ event => setSecondMeal(event.target.value) } />
+                    </div>
+                </div>
 
                 {/* <TimePicker
                     label="Basic example"
@@ -102,9 +207,25 @@ export default function TaskListPage() {
                     renderInput={(params) => <TextField {...params} />}
                 /> */}
 
-                <Divider className="w-full" variant="middle" />
+                <Divider className="w-full my-5" variant="middle" />
 
-                
+                <div className="flex flex-row justify-between flex-wrap gap-3 w-full">
+                    {ingredientsList.map((ingredient: string) => {
+                        // Change to chips?
+                        const selected = selectedIngredients.indexOf(ingredient) !== -1;
+                        return (<div className='' key={ingredient}>
+                            <ToggleButton
+                                value={ ingredient }
+                                selected={ selected }
+                                onChange={() => {
+                                    updateIngredients(ingredient, !selected);
+                                }}
+                            >
+                                { ingredient }
+                            </ToggleButton>
+                        </div>)
+                    })}
+                </div>
             </div>
         </Layout>
     )

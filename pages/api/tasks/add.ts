@@ -31,7 +31,7 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
         });
         
         res.json({ task: newTask });
-    } catch (error) {
+    } catch (error: any) {
         console.log(error)
         const { response: fetchResponse } = error
         res.status(fetchResponse?.status || 500).json(error.data || error)

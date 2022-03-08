@@ -20,7 +20,7 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
         });
 
         res.json({ tasks });
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
         const { response: fetchResponse } = error
         res.status(fetchResponse?.status || 500).json(error.data)

@@ -30,7 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             console.log(0)
             res.status(404).json({ message: `Task with ID ${taskId} not found` })
         }
-    } catch (error) {
+    } catch (error: any) {
         if (error.response) {
             const { response: fetchResponse } = error
             res.status(fetchResponse?.status || 500).json({ data: error.data, message: 'Error' })

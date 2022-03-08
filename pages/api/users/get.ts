@@ -20,7 +20,7 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
             console.log(0)
             res.status(404).json({ message: `User with email ${email} not found` })
         }
-    } catch (error) {
+    } catch (error: any) {
         if (error.response) {
             const { response: fetchResponse } = error
             res.status(fetchResponse?.status || 500).json({ data: error.data, message: 'Error' })

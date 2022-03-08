@@ -25,7 +25,7 @@ export default withApiAuthRequired(async (req: NextApiRequest, res: NextApiRespo
         } else {
             res.status(404).json({ message: `Task with ID ${taskId} not found` })
         }
-    } catch (error) {
+    } catch (error: any) {
         const { response: fetchResponse } = error
         res.status(fetchResponse?.status || 500).json(error.data)
     }
