@@ -6,6 +6,8 @@ import Head from 'next/head';
 
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 import { fetcher } from '../lib/fetchJson';
 import { createAppTheme } from '../lib/theme';
@@ -40,11 +42,13 @@ export default function App({ Component, pageProps }: AppProps) {
                 }}
             >
                 <AppProvider>
-                    <ThemeProvider theme={createAppTheme(lang.code)}>
-                        <CssBaseline />
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <ThemeProvider theme={createAppTheme(lang.code)}>
+                            <CssBaseline />
 
-                        <Component {...pageProps} />
-                    </ThemeProvider>
+                            <Component {...pageProps} />
+                        </ThemeProvider>
+                    </MuiPickersUtilsProvider>
                 </AppProvider>
             </SWRConfig>
         </UserProvider>

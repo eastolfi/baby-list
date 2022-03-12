@@ -1,20 +1,39 @@
 import { useEffect, useState } from 'react';
 
 import Divider from '@material-ui/core/Divider';
-import TextField from '@material-ui/core/TextField';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-// import {
-//     MuiPickersUtilsProvider,
-//     KeyboardTimePicker,
-//     KeyboardDatePicker,
-// } from '@material-ui/pickers';
+import { KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
+import format from 'date-fns/format'; 
+import parse from 'date-fns/parse'; 
 
 import Layout from '../../components/Layout';
 
+const parseDateTime = (time: string) => {
+    if (!time) return null;
+
+    const [ hours, mins ] = time.split(':');
+    const d = new Date();
+    d.setHours(+hours, +mins);
+    return d;
+}
+const parseDate = (date: string): Date | null => {
+    if (!date) return null;
+
+    return parse(date, 'dd/MM/yyyy', new Date());
+}
+const formatDateTime = (date: Date | null): string => {
+    return date ? format(date, 'HH:mm') : ''
+}
+const formatDate = (date: Date | null): string => {
+    return date ? format(date, 'dd/MM/yyyy') : ''
+}
+
 class DaycareData {
-    public static currentVersion = '0.0.1';
+    public static currentVersion = '0.0.2';
+    public static versions = ['0.0.1', '0.0.2']
 
     public version: string;
+    public date: string;
     public firstNap: string;
     public secondNap: string;
     public firstMeal: string;
@@ -23,6 +42,7 @@ class DaycareData {
 
     constructor(data: { [key: string]: string; }) {
         this.version = data['version'] || '';
+        this.date = data['date'] || '';
         this.firstNap = data['firstNap'] || '';
         this.secondNap = data['secondNap'] || '';
         this.firstMeal = data['firstMeal'] || '';
@@ -47,18 +67,19 @@ class DaycareData {
     }
 
     public migrate(): void {
-        const current = this.version;
-        const next = DaycareData.currentVersion;
-
-        if (this.shouldMigrate()) {
-            if (current === '') {
-                if (next === '0.0.1') {
+        DaycareData.versions.forEach(nextVersion => {
+            if (this.shouldMigrate()) {
+                if (this.version === '' && nextVersion === '0.0.1') {
                     this.migrate000To001();
+                } else if (this.version === '0.0.1' && nextVersion === '0.0.2') {
+                    this.migrate001To002();
                 }
+    
+                this.migrateVersion(nextVersion);
             }
+        })
 
-            this.save();
-        }
+        this.save();
     }
 
     public save(): void {
@@ -70,48 +91,56 @@ class DaycareData {
     }
 
     private migrate000To001(): void {
-        this.migrateVersion();
+        // Do nothing, its just for setting the initial version
     }
 
-    private migrateVersion(): void {
-        this.version = DaycareData.currentVersion;
+    private migrate001To002(): void {
+        this.date = formatDate(new Date())
+    }
+
+    private migrateVersion(version: string): void {
+        this.version = version;
     }
 }
 
 export default function DaycarePage() {
-    const [ currentDay, setCurrentDay ] = useState('2022-03-08');
-    const [ firstNap, setFirstNap ] = useState('');
-    const [ secondNap, setSecondNap ] = useState('');
-    const [ firstMeal, setFirstMeal ] = useState('');
-    const [ secondMeal, setSecondMeal ] = useState('');
+    const [ currentDay, setCurrentDay ] = useState(new Date() as Date | null);
+    const [ firstNap, setFirstNap ] = useState(null as Date | null);
+    const [ secondNap, setSecondNap ] = useState(null as Date | null);
+    const [ firstMeal, setFirstMeal ] = useState(null as Date | null);
+    const [ secondMeal, setSecondMeal ] = useState(null as Date | null);
     const [ ingredients, setIngredients ] = useState('');
     
     const ingredientsList = ['Pollo', 'Ternera', 'Pescado', 'Patatas', 'Zanahoria', 'Brocoli', 'Judías Verdes', 'Espinacas', 'Yogurt'];
     const selectedIngredients = ingredients.split('\n');
 
     useEffect(() => {
-        const { version, firstNap, secondNap, firstMeal, secondMeal, ingredients } = DaycareData.load();
+        const { version, date, firstNap, secondNap, firstMeal, secondMeal, ingredients } = DaycareData.load();
 
         DaycareData.updateData('version', version)
 
-        setFirstNap(firstNap);
-        setSecondNap(secondNap);
-        setFirstMeal(firstMeal);
-        setSecondMeal(secondMeal);
+        setCurrentDay(parseDate(date));
+        setFirstNap(parseDateTime(firstNap));
+        setSecondNap(parseDateTime(secondNap));
+        setFirstMeal(parseDateTime(firstMeal));
+        setSecondMeal(parseDateTime(secondMeal));
         setIngredients(ingredients);
     }, [])
 
     useEffect(() => {
-        DaycareData.updateData('firstNap', firstNap)
+        DaycareData.updateData('date', formatDate(currentDay))
+    }, [ currentDay ])
+    useEffect(() => {
+        DaycareData.updateData('firstNap', formatDateTime(firstNap))
     }, [ firstNap ])
     useEffect(() => {
-        DaycareData.updateData('secondNap', secondNap)
+        DaycareData.updateData('secondNap', formatDateTime(secondNap))
     }, [ secondNap ])
     useEffect(() => {
-        DaycareData.updateData('firstMeal', firstMeal)
+        DaycareData.updateData('firstMeal', formatDateTime(firstMeal))
     }, [ firstMeal ])
     useEffect(() => {
-        DaycareData.updateData('secondMeal', secondMeal)
+        DaycareData.updateData('secondMeal', formatDateTime(secondMeal))
     }, [ secondMeal ])
     useEffect(() => {
         DaycareData.updateData('ingredients', ingredients)
@@ -136,15 +165,19 @@ export default function DaycarePage() {
         <Layout>
             <div className="flex flex-col items-center">
                 <div className="flex flex-row flex-wrap justify-center w-full gap-3">
-                    <div className="w-1/4">
-                        <TextField
+                    <div className="sm:w-full">
+                        <KeyboardDatePicker
                             id="currentDay"
+                            variant="dialog"
+                            margin="normal"
                             label="Día"
-                            variant="outlined"
                             className='w-full'
-                            type='date'
-                            value={ currentDay }
-                            onChange={ event => setCurrentDay(event.target.value) } />
+                            format="dd/MM/yyyy"
+                            value={currentDay}
+                            onChange={ event => setCurrentDay(event as Date) }
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }} />
                     </div>
 
                     <Divider className="w-full my-5" variant="middle" />
@@ -152,60 +185,55 @@ export default function DaycarePage() {
 
                 <div className="flex flex-row w-full gap-3">
                     <div className="w-1/2">
-                        <TextField
+                        <KeyboardTimePicker
+                            margin="normal"
                             id="firstNap"
                             label="Siesta 1"
-                            variant="outlined"
-                            className='w-full'
-                            type='time'
-                            value={ firstNap }
-                            onChange={ event => setFirstNap(event.target.value) } />
+                            value={firstNap}
+                            onChange={ event => setFirstNap(event as Date) }
+                            KeyboardButtonProps={{
+                                'aria-label': 'change time',
+                            }} />
                     </div>
 
                     <div className="w-1/2">
-                        <TextField
+                        <KeyboardTimePicker
+                            margin="normal"
                             id="secondNap"
                             label="Siesta 2"
-                            variant="outlined"
-                            className='w-full'
-                            type='time'
-                            value={ secondNap }
-                            onChange={ event => setSecondNap(event.target.value) } />
+                            value={secondNap}
+                            onChange={ event => setSecondNap(event as Date) }
+                            KeyboardButtonProps={{
+                                'aria-label': 'change time',
+                            }} />
                     </div>
                 </div>
                 
                 <div className="flex flex-row w-full gap-3">
                     <div className="w-1/2">
-                        <TextField
+                        <KeyboardTimePicker
+                            margin="normal"
                             id="firstMeal"
                             label="Comida 1"
-                            variant="outlined"
-                            className='w-full'
-                            type='time'
-                            value={ firstMeal }
-                            onChange={ event => setFirstMeal(event.target.value) } />
+                            value={firstMeal}
+                            onChange={ event => setFirstMeal(event as Date) }
+                            KeyboardButtonProps={{
+                                'aria-label': 'change time',
+                            }} />
                     </div>
 
                     <div className="w-1/2">
-                        <TextField
+                        <KeyboardTimePicker
+                            margin="normal"
                             id="secondMeal"
                             label="Comida 2"
-                            variant="outlined"
-                            className='w-full'
-                            type='time'
-                            value={ secondMeal }
-                            onChange={ event => setSecondMeal(event.target.value) } />
+                            value={secondMeal}
+                            onChange={ event => setSecondMeal(event as Date) }
+                            KeyboardButtonProps={{
+                                'aria-label': 'change time',
+                            }} />
                     </div>
                 </div>
-
-                {/* <TimePicker
-                    label="Basic example"
-                    value={value}
-                    onChange={(newValue) => {
-                    setValue(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                /> */}
 
                 <Divider className="w-full my-5" variant="middle" />
 
